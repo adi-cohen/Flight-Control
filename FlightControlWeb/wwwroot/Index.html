@@ -1,44 +1,135 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>To-do CRUD</title>
-    <link rel="stylesheet" href="css/site.css" />
+    <title>CSS Website Layout</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        /* Style the header */
+        .header {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Create three unequal columns that floats next to each other */
+        .column {
+            float: left;
+            text-align: center;
+            border: 2px solid;
+            border-radius: 5px;
+            margin-left: 2px;
+            margin-bottom: 2px;
+        }
+
+            /* Left and right column */
+            .column.side {
+                width: 20%;
+            }
+
+            /* Middle column */
+            .column.middle {
+                width: 59%;
+            }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 800px) {
+            .column.side, .column.middle {
+                width: 100%;
+            }
+        }
+
+        /* Style the footer */
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            border: 2px solid;
+            border-radius: 5px;
+            margin-right: 2px;
+            margin-left: 2px;
+        }
+        #draganddropimage {
+            max-width: 80%;
+            visibility: hidden;
+        }
+    </style>
 </head>
 <body>
-    <h1>To-do CRUD</h1>
-    <h3>Add</h3>
-    <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
-        <input type="text" id="add-name" placeholder="New to-do">
-        <input type="submit" value="Add">
-    </form>
 
-    <div id="editForm">
-        <h3>Edit</h3>
-        <form action="javascript:void(0);" onsubmit="updateItem()">
-            <input type="hidden" id="edit-id">
-            <input type="checkbox" id="edit-isComplete">
-            <input type="text" id="edit-name">
-            <input type="submit" value="Save">
-            <a onclick="closeInput()" aria-label="Close">&#10006;</a>
-        </form>
+    <div class="header">
+        <h1>Flight Control</h1>
+        <p>made by COMBO Projects</p>
     </div>
 
-    <p id="counter"></p>
+    <div class="row">
+        <div class="column side" ondragover="allowDrop(event)">
+            <h2>My Flights</h2>
+            <select id="myFlightList" name="myFlightsList" size="5" style="width: 90%; text-align: center">
+                <option value="option1">one</option>
+                <option value="option2">two</option>
+                <option value="Option3">three</option>
+                <option value="option4">four</option>
+                <option value="Option5">five</option>
+                <option value="Option6">six</option>
+                <option value="Option7">seven</option>
+                <option value="Option8">eight</option>
+            </select>
+            <img src="drop-files-here.jpg" id="draganddropimage" hidden="hidden"  ondragleave="dragLeave(event)" ondrop="drop(event)"/>            
+        </div>
 
-    <table>
-        <tr>
-            <th>Is Complete?</th>
-            <th>Name</th>
-            <th></th>
-            <th></th>
-        </tr>
-        <tbody id="todos"></tbody>
-    </table>
+        <div class="column middle">
+            <h2>Map</h2>
+            <p>map is here</p>
+        </div>
 
-    <script src="js/site.js" asp-append-version="true"></script>
-    <script type="text/javascript">
-        getItems();
+        <div class="column side">
+            <h2>Ext. Flights</h2>
+            <p>drag to here</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>details of selected flight:</p>
+    </div>
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+            document.getElementById("draganddropimage").style.visibility = "visible";
+            $("#myFlightList").hide();
+            $("#draganddropimage").show();
+        }
+        function dragLeave(event) {
+            event.preventDefault();
+            $("#draganddropimage").hide();
+            $("#myFlightList").show();
+
+        }
+        function drop(event) {
+            event.preventDefault();
+            $("#draganddropimage").hide();
+            $("#myFlightList").show();
+            
+            let file = event.dataTransfer.files[0];
+            
+            //todo: send to server
+        }
     </script>
 </body>
 </html>
