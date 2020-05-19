@@ -47,7 +47,7 @@ namespace FlightControlWeb.Migrations
                             Id = 1L,
                             CompanyName = "combo",
                             Passengers = 4,
-                            StartDate = new DateTime(2020, 5, 18, 11, 19, 46, 314, DateTimeKind.Local).AddTicks(9957),
+                            StartDate = new DateTime(2020, 5, 19, 11, 38, 13, 327, DateTimeKind.Local).AddTicks(8789),
                             StartLatitude = 32.439999999999998,
                             StartLongitude = 31.219999999999999
                         },
@@ -56,7 +56,7 @@ namespace FlightControlWeb.Migrations
                             Id = 2L,
                             CompanyName = "mmba",
                             Passengers = 3,
-                            StartDate = new DateTime(2020, 5, 18, 11, 19, 46, 323, DateTimeKind.Local).AddTicks(9025),
+                            StartDate = new DateTime(2020, 5, 19, 11, 38, 13, 331, DateTimeKind.Local).AddTicks(2111),
                             StartLatitude = 32.329999999999998,
                             StartLongitude = 31.440000000000001
                         });
@@ -66,6 +66,9 @@ namespace FlightControlWeb.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("FlightId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long?>("FlightPlanId")
@@ -84,7 +87,28 @@ namespace FlightControlWeb.Migrations
 
                     b.HasIndex("FlightPlanId");
 
-                    b.ToTable("Segment");
+                    b.ToTable("Segments");
+                });
+
+            modelBuilder.Entity("FlightControlWeb.Models.Server", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Servers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Url = "testURL.com"
+                        });
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.Segment", b =>
