@@ -28,46 +28,38 @@ namespace FlightControlWeb.Migrations
                     b.Property<int>("Passengers")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("StartLatitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("StartLongitude")
+                        .HasColumnType("REAL");
+
                     b.HasKey("Id");
 
-                    b.ToTable("FlightPlan");
+                    b.ToTable("FlightPlans");
 
                     b.HasData(
                         new
                         {
                             Id = 1L,
                             CompanyName = "combo",
-                            Passengers = 4
+                            Passengers = 4,
+                            StartDate = new DateTime(2020, 5, 19, 11, 38, 13, 327, DateTimeKind.Local).AddTicks(8789),
+                            StartLatitude = 32.439999999999998,
+                            StartLongitude = 31.219999999999999
                         },
                         new
                         {
                             Id = 2L,
                             CompanyName = "mmba",
-                            Passengers = 3
+                            Passengers = 3,
+                            StartDate = new DateTime(2020, 5, 19, 11, 38, 13, 331, DateTimeKind.Local).AddTicks(2111),
+                            StartLatitude = 32.329999999999998,
+                            StartLongitude = 31.440000000000001
                         });
-                });
-
-            modelBuilder.Entity("FlightControlWeb.Models.InitialLocation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<long>("FlightId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("InitialLocation");
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.Segment", b =>
@@ -88,9 +80,6 @@ namespace FlightControlWeb.Migrations
                     b.Property<double>("Longitude")
                         .HasColumnType("REAL");
 
-                    b.Property<long>("SegmentNumber")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("TimeInSeconds")
                         .HasColumnType("INTEGER");
 
@@ -99,6 +88,27 @@ namespace FlightControlWeb.Migrations
                     b.HasIndex("FlightPlanId");
 
                     b.ToTable("Segments");
+                });
+
+            modelBuilder.Entity("FlightControlWeb.Models.Server", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Servers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Url = "testURL.com"
+                        });
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.Segment", b =>
