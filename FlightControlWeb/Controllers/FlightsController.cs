@@ -13,7 +13,7 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly DBInteractor db;
+        private readonly DBInteractor _context;
 
         public FlightsController(DBInteractor context)
         {

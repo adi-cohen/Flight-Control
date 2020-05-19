@@ -14,7 +14,7 @@ namespace FlightControlWeb.Controllers
     public class FlightPlanController : ControllerBase
     {
         private readonly DBInteractor db;
-        private readonly IFlightPlanManager Manager = new FlightPlanManager(db);
+        private readonly IFlightPlanManager Manager = new FlightPlanManager(new DBInteractor());
         
 
 
