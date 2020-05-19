@@ -8,19 +8,19 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\YuvalMachlev\\.nuget\\packages\\": {}
+    "C:\\Users\\עדי כהן\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\YuvalMachlev\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj",
+      "projectUniqueName": "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
       "projectName": "FlightControlWeb",
-      "projectPath": "C:\\Users\\YuvalMachlev\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj",
-      "packagesPath": "C:\\Users\\YuvalMachlev\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\YuvalMachlev\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\obj\\",
+      "projectPath": "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
+      "packagesPath": "C:\\Users\\עדי כהן\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlWeb\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\YuvalMachlev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\עדי כהן\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -61,7 +61,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
       }
     }
   }
