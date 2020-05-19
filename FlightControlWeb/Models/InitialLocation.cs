@@ -7,17 +7,22 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class Segment
+    public class InitialLocation
     {
         public long Id { get; set; }
 
         [ForeignKey("FlightPlan")]
         public long FlightId { get; set; }
-        public long SegmentNumber { get; set; }
-        public double Longitude { get; set; }
-        public double Latitude { get; set; }
-        [JsonPropertyName("timespan_seconds")]
+        [JsonPropertyName("longitude")]
 
-        public int TimeInSeconds { get; set; }
+        
+        public double Longitude { get; set; }
+        [JsonPropertyName("latitude")]
+
+        public double Latitude { get; set; }
+        [JsonPropertyName("date_time")]
+
+        public DateTime DateTime { get; set; }
+
     }
 }
