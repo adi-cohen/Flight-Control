@@ -18,7 +18,7 @@ namespace FlightControlWeb.Migrations
 
             modelBuilder.Entity("FlightControlWeb.Models.Flight", b =>
                 {
-                    b.Property<int>("FlightId")
+                    b.Property<long>("FlightId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 

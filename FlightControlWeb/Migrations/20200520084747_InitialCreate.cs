@@ -11,7 +11,7 @@ namespace FlightControlWeb.Migrations
                 name: "Flight",
                 columns: table => new
                 {
-                    FlightId = table.Column<int>(nullable: false)
+                    FlightId = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Longitude = table.Column<double>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
