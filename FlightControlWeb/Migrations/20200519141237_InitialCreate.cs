@@ -3,25 +3,56 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FlightControlWeb.Migrations
 {
-    public partial class NewCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "FlightPlans",
+                name: "Flight",
+                columns: table => new
+                {
+                    FlightId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Longitude = table.Column<double>(nullable: false),
+                    Latitude = table.Column<double>(nullable: false),
+                    Passengers = table.Column<int>(nullable: false),
+                    CompanyName = table.Column<string>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    IsExternal = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Flight", x => x.FlightId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FlightPlan",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Passengers = table.Column<int>(nullable: false),
-                    CompanyName = table.Column<string>(nullable: true),
-                    StartLongitude = table.Column<double>(nullable: false),
-                    StartLatitude = table.Column<double>(nullable: false),
-                    StartDate = table.Column<DateTime>(nullable: false)
+                    CompanyName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FlightPlans", x => x.Id);
+                    table.PrimaryKey("PK_FlightPlan", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InitialLocation",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FlightId = table.Column<long>(nullable: false),
+                    Longitude = table.Column<double>(nullable: false),
+                    Latitude = table.Column<double>(nullable: false),
+                    DateTime = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InitialLocation", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,6 +75,7 @@ namespace FlightControlWeb.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FlightId = table.Column<long>(nullable: false),
+                    SegmentNumber = table.Column<long>(nullable: false),
                     Longitude = table.Column<double>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
                     TimeInSeconds = table.Column<int>(nullable: false),
@@ -53,22 +85,22 @@ namespace FlightControlWeb.Migrations
                 {
                     table.PrimaryKey("PK_Segments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Segments_FlightPlans_FlightPlanId",
+                        name: "FK_Segments_FlightPlan_FlightPlanId",
                         column: x => x.FlightPlanId,
-                        principalTable: "FlightPlans",
+                        principalTable: "FlightPlan",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
-                table: "FlightPlans",
-                columns: new[] { "Id", "CompanyName", "Passengers", "StartDate", "StartLatitude", "StartLongitude" },
-                values: new object[] { 1L, "combo", 4, new DateTime(2020, 5, 19, 11, 38, 13, 327, DateTimeKind.Local).AddTicks(8789), 32.439999999999998, 31.219999999999999 });
+                table: "FlightPlan",
+                columns: new[] { "Id", "CompanyName", "Passengers" },
+                values: new object[] { 1L, "combo", 4 });
 
             migrationBuilder.InsertData(
-                table: "FlightPlans",
-                columns: new[] { "Id", "CompanyName", "Passengers", "StartDate", "StartLatitude", "StartLongitude" },
-                values: new object[] { 2L, "mmba", 3, new DateTime(2020, 5, 19, 11, 38, 13, 331, DateTimeKind.Local).AddTicks(2111), 32.329999999999998, 31.440000000000001 });
+                table: "FlightPlan",
+                columns: new[] { "Id", "CompanyName", "Passengers" },
+                values: new object[] { 2L, "mmba", 3 });
 
             migrationBuilder.InsertData(
                 table: "Servers",
@@ -84,13 +116,19 @@ namespace FlightControlWeb.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Flight");
+
+            migrationBuilder.DropTable(
+                name: "InitialLocation");
+
+            migrationBuilder.DropTable(
                 name: "Segments");
 
             migrationBuilder.DropTable(
                 name: "Servers");
 
             migrationBuilder.DropTable(
-                name: "FlightPlans");
+                name: "FlightPlan");
         }
     }
 }

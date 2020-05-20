@@ -7,7 +7,7 @@ namespace FlightControlWeb.Models
 {
     public class Flight
     {
-        public int FlightId { get; set; }
+        public long FlightId { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public int Passengers { get; set; }

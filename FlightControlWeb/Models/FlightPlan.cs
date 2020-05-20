@@ -15,15 +15,15 @@ namespace FlightControlWeb.Models
         [JsonPropertyName("company_name")]
         public string CompanyName { get; set; }
 
-      
-
-        [JsonPropertyName("segments")]
-        public List<Segment> Segments { get; set; }
 
         [NotMapped]
         [JsonPropertyName("initial_location")]
         public InitialLocation InitialLocation { get; set; }
 
+        [JsonPropertyName("segments")]
+        public List<Segment> Segments { get; set; }
+
+       
     }
 
 }

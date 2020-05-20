@@ -10,9 +10,13 @@ namespace FlightControlWeb.Models
         public void DeleteFlightPlan(int id);
         public FlightPlan GetFlightPlan(int id);
         public void AddFlightPlan(FlightPlan flightplan);
-        public IEnumerable<FlightPlan> GetAllFlights();
-        public IEnumerable<FlightPlan> GetInternalFlights();
+        public List<FlightPlan> GetActiveFlights(DateTime time);
         public long GanerateID();
+
+        public List<Segment> GetFlightPlanSegments(long id);
+
+
+        
 
 
     }

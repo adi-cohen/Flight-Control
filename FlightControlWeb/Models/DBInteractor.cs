@@ -27,8 +27,8 @@ namespace FlightControlWeb.Models
             InitialLocation initLocation12 = new InitialLocation() { Longitude = 31.7, Latitude = 34.5, DateTime = DateTime.Now };
 
             modelBuilder.Entity<FlightPlan>().HasData(
-            new FlightPlan() { Id = 1, Passengers = 4, CompanyName = "combo", StartLongitude = 31.22, StartLatitude = 32.44, StartDate = DateTime.Now, Segments = null },
-            new FlightPlan() { Id = 2, Passengers = 3, CompanyName = "mmba", StartLongitude = 31.44, StartLatitude = 32.33, StartDate = DateTime.Now, Segments = null }
+            new FlightPlan() { Id = 1, Passengers = 4, CompanyName = "combo", InitialLocation =  initLocation1, Segments = null },
+            new FlightPlan() { Id = 2, Passengers = 3, CompanyName = "mmba", InitialLocation =initLocation12, Segments = null }
             );
 
             modelBuilder.Entity<Server>().HasData(

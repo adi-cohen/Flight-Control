@@ -20,58 +20,42 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
-        // GET: api/Flights
+       /* // GET: api/Flights
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Flight>>> GetFlight()
         {
             return await _context.Flight.ToListAsync();
-        }
+        }*/
 
-        // GET: api/Flights/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Flight>> GetFlight(int id)
+        // GET: api/Flights/
+        [HttpGet("")]
+        public async   Task<ActionResult<Flight>> GetFlights([FromQuery]string relative_to, [FromQuery] string sync)//, string sync = null)
         {
-            var flight = await _context.Flight.FindAsync(id);
+            bool ToSyncAll = Request.Query.ContainsKey("sync_all");
+            DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(DateTime.Parse(relative_to)));
+            UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
+
+            if (ToSyncAll)
+            {
+                //ask other servers
+            }
+            else
+            {
+                
+
+            }
+            /*var flight = await _context.Flight.FindAsync(id);
 
             if (flight == null)
             {
                 return NotFound();
             }
-
-            return flight;
+            */
+            //return flight;
+            return Ok();
         }
 
-        // PUT: api/Flights/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutFlight(int id, Flight flight)
-        {
-            if (id != flight.FlightId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(flight).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FlightExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
+     
 
         // POST: api/Flights
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
