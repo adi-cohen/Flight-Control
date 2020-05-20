@@ -14,22 +14,25 @@ namespace FlightControlWeb.Controllers
     public class FlightPlanController : ControllerBase
     {
         private readonly DBInteractor db;
+        private readonly IFlightPlanManager Manager = new FlightPlanManager(new DBInteractor());
+        
+
 
         public FlightPlanController(DBInteractor newDb)
         {
             db = newDb;
         }
 
-        // GET: api/FlightPlan
+        /*// GET: api/FlightPlan
+        // return all flights plan
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightPlan>>> GetFlightPlans()
         {
             return await db.FlightPlans.ToListAsync();
-           
-            //return await db.Segments.ToListAsync();
-        }
+        }*/
 
         // GET: api/FlightPlan/5
+        //return flight plan by id
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(long id)
         {
@@ -39,51 +42,43 @@ namespace FlightControlWeb.Controllers
             {
                 return NotFound();
             }
-
             return flightPlan;
         }
 
-        // PUT: api/FlightPlan/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutFlightPlan(long id, FlightPlan flightPlan)
-        {
-            if (id != flightPlan.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(flightPlan).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FlightPlanExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
+        
 
         // POST: api/FlightPlan
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        // insert new flight plan
         [HttpPost]
-        public async Task<ActionResult<FlightPlan>> PostFlightPlan(FlightPlan flightPlan)
+        public async Task<ActionResult<FlightPlan>> PostFlightPlan([FromBody] FlightPlan flightPlan)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data.");
+            }
+            //generate random id
+            long FlightId = Manager.GanerateID();
+            flightPlan.Id = FlightId;
             db.FlightPlans.Add(flightPlan);
-            await db.SaveChangesAsync();
+            
+            //adding all segments to DB
+            int segmentNum = 1;
+            foreach (Segment element in flightPlan.Segments)
+            {
+                //adding segment number for segments in the same flight plan
+                element.SegmentNumber = segmentNum;
+                segmentNum ++;
+                element.FlightId = FlightId;
+                element.Id = Manager.GanerateID();
+                db.Segments.Add(element);
+            }
 
+            //adding InitialLocation to DB
+            flightPlan.InitialLocation.FlightId = FlightId;
+            flightPlan.InitialLocation.Id = Manager.GanerateID();
+            db.InitLocations.Add(flightPlan.InitialLocation);
+
+            await db.SaveChangesAsync();
             return CreatedAtAction("GetFlightPlan", new { id = flightPlan.Id }, flightPlan);
         }
 
@@ -96,15 +91,23 @@ namespace FlightControlWeb.Controllers
             {
                 return NotFound();
             }
+            //delete all the segment of the flight
+            List<Segment> segmentToDelete = db.Segments.Where(e => e.FlightId == id).ToList();
+            foreach (Segment s in segmentToDelete)
+            {
+                db.Segments.Remove(s);
+            }
 
+            //delete the initial location of the flight
+            InitialLocation initLocationToDelete = db.InitLocations.Where(e => e.FlightId == id).First();
+            db.InitLocations.Remove(initLocationToDelete);
+
+            //delete the flight plan
             db.FlightPlans.Remove(flightPlan);
             await db.SaveChangesAsync();
             return flightPlan;
         }
 
-        private bool FlightPlanExists(long id)
-        {
-            return db.FlightPlans.Any(e => e.Id == id);
-        }
+        
     }
 }

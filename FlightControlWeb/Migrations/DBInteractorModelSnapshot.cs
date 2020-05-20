@@ -16,6 +16,35 @@ namespace FlightControlWeb.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.4");
 
+            modelBuilder.Entity("FlightControlWeb.Models.Flight", b =>
+                {
+                    b.Property<int>("FlightId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsExternal")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("Passengers")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("FlightId");
+
+                    b.ToTable("Flight");
+                });
+
             modelBuilder.Entity("FlightControlWeb.Models.FlightPlan", b =>
                 {
                     b.Property<long>("Id")
@@ -28,38 +57,46 @@ namespace FlightControlWeb.Migrations
                     b.Property<int>("Passengers")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("StartLatitude")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("StartLongitude")
-                        .HasColumnType("REAL");
-
                     b.HasKey("Id");
 
-                    b.ToTable("FlightPlans");
+                    b.ToTable("FlightPlan");
 
                     b.HasData(
                         new
                         {
                             Id = 1L,
                             CompanyName = "combo",
-                            Passengers = 4,
-                            StartDate = new DateTime(2020, 5, 19, 11, 38, 13, 327, DateTimeKind.Local).AddTicks(8789),
-                            StartLatitude = 32.439999999999998,
-                            StartLongitude = 31.219999999999999
+                            Passengers = 4
                         },
                         new
                         {
                             Id = 2L,
                             CompanyName = "mmba",
-                            Passengers = 3,
-                            StartDate = new DateTime(2020, 5, 19, 11, 38, 13, 331, DateTimeKind.Local).AddTicks(2111),
-                            StartLatitude = 32.329999999999998,
-                            StartLongitude = 31.440000000000001
+                            Passengers = 3
                         });
+                });
+
+            modelBuilder.Entity("FlightControlWeb.Models.InitialLocation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("FlightId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InitialLocation");
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.Segment", b =>
@@ -79,6 +116,9 @@ namespace FlightControlWeb.Migrations
 
                     b.Property<double>("Longitude")
                         .HasColumnType("REAL");
+
+                    b.Property<long>("SegmentNumber")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TimeInSeconds")
                         .HasColumnType("INTEGER");
