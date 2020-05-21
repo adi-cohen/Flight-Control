@@ -14,14 +14,14 @@ namespace FlightControlWeb.Controllers
     public class FlightPlanController : ControllerBase
     {
         private readonly DBInteractor db;
-        private readonly IFlightPlanManager Manager = new FlightPlanManager(new DBInteractor());
-        
-
-
+        private readonly IFlightPlanManager manager;
         public FlightPlanController(DBInteractor newDb)
         {
             db = newDb;
+            manager = new FlightPlanManager(db);
+
         }
+
 
         /*// GET: api/FlightPlan
         // return all flights plan
@@ -57,7 +57,7 @@ namespace FlightControlWeb.Controllers
                 return BadRequest("Invalid data.");
             }
             //generate random id
-            long FlightId = Manager.GanerateID();
+            long FlightId = manager.GanerateID();
             flightPlan.Id = FlightId;
             db.FlightPlans.Add(flightPlan);
             
@@ -69,13 +69,13 @@ namespace FlightControlWeb.Controllers
                 element.SegmentNumber = segmentNum;
                 segmentNum ++;
                 element.FlightId = FlightId;
-                element.Id = Manager.GanerateID();
+                element.Id = manager.GanerateID();
                 db.Segments.Add(element);
             }
 
             //adding InitialLocation to DB
             flightPlan.InitialLocation.FlightId = FlightId;
-            flightPlan.InitialLocation.Id = Manager.GanerateID();
+            flightPlan.InitialLocation.Id = manager.GanerateID();
             db.InitLocations.Add(flightPlan.InitialLocation);
 
             await db.SaveChangesAsync();

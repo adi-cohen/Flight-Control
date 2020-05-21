@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace FlightControlWeb.Controllers
 {
@@ -14,10 +17,12 @@ namespace FlightControlWeb.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly DBInteractor _context;
+        private FlightManager manager;
 
         public FlightsController(DBInteractor context)
         {
             _context = context;
+            manager = new FlightManager(new FlightPlanManager(context), context);
         }
 
        /* // GET: api/Flights
@@ -29,30 +34,22 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/Flights/
         [HttpGet("")]
-        public async   Task<ActionResult<Flight>> GetFlights([FromQuery]string relative_to, [FromQuery] string sync)//, string sync = null)
+        public async Task<string> GetFlights([FromQuery]string relative_to, [FromQuery] string sync)//, string sync = null)
         {
             bool ToSyncAll = Request.Query.ContainsKey("sync_all");
             DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(DateTime.Parse(relative_to)));
-            UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
-
+            //UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
+            List<Flight> flightList = new List<Flight>();
             if (ToSyncAll)
             {
                 //ask other servers
             }
-            else
-            {
-                
+            List<Flight> internalFlights =  manager.getAllFlights(UtcTime);
+            flightList.AddRange(internalFlights);
 
-            }
-            /*var flight = await _context.Flight.FindAsync(id);
+            string output = JsonConvert.SerializeObject(flightList);
+            return output;
 
-            if (flight == null)
-            {
-                return NotFound();
-            }
-            */
-            //return flight;
-            return Ok();
         }
 
      
