@@ -61,6 +61,12 @@ function addToMap(flight) {
 }
 
 function showFlightDetails(event) {
+    /*let greenIcon = L.icon({
+        iconUrl: 'greenAirplane.png',
+        iconSize: [38, 40], // size of the icon
+        iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+        popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });*/
     console.log(this.className);
     // get for json for certain id
     let path = [[34, 42], [40, 44]];

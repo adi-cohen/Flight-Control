@@ -26,7 +26,11 @@ function drop(event) {
 
 let ContentType = 'application/json;charset=utf-8'
 function preparePost(file) {
-    let fileAsStr = JSON.stringify(file);
+    let jsonObj = '{"passengers": 150,"company_name": "SwissAir", "initial_location": {"longitude": 20.0,"latitude": 30.2,"date_time": "2020-12-27T01:56:21Z"}';
+    let fileAsStr = JSON.stringify(jsonObj);
+    //console.log(file);
+    console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXx");
+    console.log(fileAsStr)
     return {
         "method": "POST",
         "headers": {'Content-Type': ContentType },
