@@ -100,11 +100,11 @@ function prepareGetAll() {
     }
 }
 
-function addFlights(flights) { 
-    let flightsArray = [];
-    flightsArray = JSON.parse(flights);
+//function addFlights(flights) { 
+//    let flightsArray = [];
+//    flightsArray = JSON.parse(flights);
     
-}
+//}
 
 function addToMyFlight(flight) {
     let myFlights = document.getElementById("myFlightList"); //body
