@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Models;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace FlightControlWeb.Controllers
 {
@@ -14,10 +16,12 @@ namespace FlightControlWeb.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly DBInteractor _context;
+        private readonly ServerManager _servManager;
 
-        public FlightsController(DBInteractor context)
+        public FlightsController(DBInteractor context, ServerManager servManager)
         {
             _context = context;
+            _servManager = servManager;
         }
 
        /* // GET: api/Flights
@@ -37,7 +41,20 @@ namespace FlightControlWeb.Controllers
 
             if (ToSyncAll)
             {
-                //ask other servers
+                // list to add Flight Objects
+
+                // Build the request string to send. 
+                string request = "/api/Flights?relative_to=";
+                request += relative_to;
+
+                // Pass the HTTP request to all registered external servers.
+                foreach (Server serv in _context.Servers)
+                {
+                    string serverUrl = serv.Url;
+                    request = serverUrl + request;
+                    // Send the request.
+                    dynamic response = await ServerManager.makeRequest(request);
+                }
             }
             else
             {

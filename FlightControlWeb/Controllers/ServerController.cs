@@ -12,10 +12,12 @@ namespace FlightControlWeb.Controllers
     public class ServerController : ControllerBase
     {
         private readonly DBInteractor db;
+        private readonly ServerManager manager;
 
-        public ServerController(DBInteractor newDb)
+        public ServerController(DBInteractor newDb, ServerManager mngr)
         {
             db = newDb;
+            manager = mngr;
         }
 
         // GET: api/Server
@@ -23,13 +25,13 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<IEnumerable<Server>>> GetServers()
         {
             return await db.Servers.ToListAsync();
-
         }
 
         // POST: api/Server
         [HttpPost]
         public async void PostServer([FromBody] Server serv)
         {
+            serv.Id = manager.GanerateID();
             db.Servers.Add(serv);
             await db.SaveChangesAsync();
         }
