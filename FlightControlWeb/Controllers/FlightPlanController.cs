@@ -29,6 +29,8 @@ namespace FlightControlWeb.Controllers
             //return await db.Segments.ToListAsync();
         }
 
+
+
         // GET: api/FlightPlan/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(long id)
