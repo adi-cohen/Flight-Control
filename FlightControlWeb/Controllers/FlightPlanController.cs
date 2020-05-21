@@ -23,13 +23,13 @@ namespace FlightControlWeb.Controllers
         }
 
 
-        /*// GET: api/FlightPlan
+        // GET: api/FlightPlan
         // return all flights plan
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightPlan>>> GetFlightPlans()
         {
             return await db.FlightPlans.ToListAsync();
-        }*/
+        }
 
 
 
