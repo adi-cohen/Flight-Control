@@ -1,27 +1,41 @@
 ﻿let mymap = L.map('mapId').setView([51.505, -0.09], 1);
 createMap();
 
-func = function dataUpdate() {
+let func = function dataUpdate() {
     let getOptions = prepareGetAll();
     let date = getDate();
-    //let url = "/api/Flights?relative_to=".concat(date).concat("&sync_all");
-    let url = "api/FlightPlan"
+    console.log(date);
+    let url = "/api/Flights?relative_to=".concat(date).concat("&sync_all");
+    //let url = "http://ronyut.atwebpages.com/ap2/api/Flights?relative_to=".concat(date);
+
+    console.log("url is: " + url);
+    //let url = "api/FlightPlan"
     $.ajax({
         url: url,
-        type: 'get',
+        type: 'GET',
         dataType: 'JSON',
         success: function (response) {
             clearLists();
             let len = response.length;
+            console.log("rsponse length: " + len);
             for (let i = 0; i < len; i++) {
-                if (response[i].isExternal == 1) {
+                console.log("i is: " + i);
+
+                console.log("rsponse is666: " + response[1].flight_id);
+                console.log("rsponse is666: " + response[2].flight_id);
+
+
+                if (response[i].is_external == 1) {
                     addToExtFlight(response[i]);
                     //testFunc();
                 } else {
                     addToMyFlight(response[i]);
                     //console.log(response[i]);
                 }
+                console.log("before add to map");
+
                 addToMap(response[i]);
+                console.log("after add to map");
 
             }
         }
@@ -45,14 +59,16 @@ function createMap() {
 
 function addToMap(flight) {
     let blackIcon = L.icon({
-        iconUrl: 'blackAirplane.png',
+        iconUrl: 'pictures/greenAirplane.png',
         iconSize: [38, 40], // size of the icon
-        iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+        iconAnchor: [26, 26], // point of the icon which will correspond to marker's location
         popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
     //blackIcon.className = flight.id;
-    let marker1 = L.marker([flight.startLongitude, flight.startLatitude], { icon: blackIcon }).addTo(mymap);
-    marker1.className = flight.id;
+    //let marker1 = L.marker([flight.longitude, flight.latitude], { icon: blackIcon }).addTo(mymap);
+    let marker1 = L.marker([flight.longitude, flight.latitude]).addTo(mymap);
+
+    marker1.className = flight.flight_id;
     marker1.on('click', showFlightDetails);
 
 
@@ -86,7 +102,7 @@ function getDate() {
     let second = ('0' + date.getUTCSeconds().toString()).substr(-2);
 
     let dateStr = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second + 'Z';
-    console.log(dateStr);
+    //console.log(dateStr);
     return dateStr;
 }
 
@@ -119,9 +135,9 @@ function addToMyFlight(flight) {
     icon.innerText = "delete";
 
     //column 1
-    myFlightElCl1.id = flight.id;
-    myFlightElCl1.className = flight.id;
-    let x = flight.id.toString() + flight.company_name; //unique name of flight
+    myFlightElCl1.id = flight.flight_id;
+    myFlightElCl1.className = flight.flight_id;
+    let x = flight.flight_id.toString() + flight.company_name; //unique name of flight
     let text = document.createTextNode(x);
     myFlightElCl1.appendChild(text);
     myFlightElCl1.onclick = showFlightDetails; //event handler
@@ -137,13 +153,15 @@ function addToMyFlight(flight) {
 
     //debug
     console.log(JSON.stringify(flight));
+    console.log("finish inside flights");
+
 }
 
 function addToExtFlight(flight) {
     let extFlights = document.getElementById("extFlightList");
     let extFlightsEl = document.createElement("option");
-    extFlightsEl.id = flight.id;
-    extFlightsEl.innerHTML = flight.id;
+    extFlightsEl.id = flight.flight_id;
+    extFlightsEl.innerHTML = flight.flight_id;
     extFlights.append(myFlightsEl);
     console.log(JSON.stringify(flight));
 }

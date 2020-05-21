@@ -89,6 +89,9 @@ function drop(event) {
     function postData(jdata) {
         let request = new XMLHttpRequest();
         request.open("POST", "/api/FlightPlan", true);
+
+        //request.open("POST", "http://ronyut.atwebpages.com/ap2/api/FlightPlan", true);
+
         request.setRequestHeader("Content-Type", "application/json");
         request.send(jdata);
     }
