@@ -37,6 +37,13 @@ namespace FlightControlWeb.Controllers
             {
                 return NotFound();
             }
+            List<Segment> flightSegments = db.Segments.Where(s => s.FlightId == flightPlan.Id).ToList();
+            InitialLocation flightinitLocation = db.InitLocations.Where(i => i.FlightId == flightPlan.Id).First();
+            DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
+            UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
+            flightinitLocation.DateTime = UtcTime;
+            flightPlan.Segments = flightSegments;
+            flightPlan.InitialLocation = flightinitLocation;
             string output = JsonConvert.SerializeObject(flightPlan);
             return output;
         }

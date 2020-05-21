@@ -44,35 +44,36 @@ namespace FlightControlWeb.Models
                     else //The requested time is in the segment
                     {
                         TimeSpan theDiffFromStartTime = time - lastStrartTime;
-                        int theDiffFromStartTimeInSeconds = theDiffFromStartTime.Seconds;
+                        int theDiffFromStartTimeInSeconds = (int) theDiffFromStartTime.TotalSeconds;
                         int precentOfTime = Math.Abs(theDiffFromStartTimeInSeconds) / Math.Abs(seg.TimeInSeconds);
                         double startLongitude = lastLongitude;
                         double startLatitude = lastLatitude;
                         double endLongitude = seg.Longitude;
                         double endlatitude = seg.Latitude;
                         //Use Pythagorean Theorem to determine segment length
-                        double distanceOfAllSegment = Math.Pow((endlatitude - startLatitude), 2) + Math.Pow((endLongitude - startLongitude), 2);
+                        double distanceOfAllSegment = Math.Sqrt( Math.Pow((endlatitude - startLatitude), 2) + Math.Pow((endLongitude - startLongitude), 2));
                         double distanceFromStartUntilTime = distanceOfAllSegment * precentOfTime;
                         //Calculate the angle to calculate the new position
                         double angle = Math.Acos((Math.Abs(startLongitude - endLongitude)) / distanceOfAllSegment);
-                        double LatitudeDistance = precentOfTime * distanceOfAllSegment * Math.Cos(angle);
-                        double LongitudeDistance = precentOfTime * distanceOfAllSegment * Math.Sin(angle);
-
-
-
-
-
-
-
-
-                        double longitudeDiff = Math.Abs(seg.Longitude - lastLongitude);
-                        double latitudeDiff = Math.Abs(seg.Latitude - lastLatitude);
-                       // int precentOfTimeSpent ;
-                        //TimeSpan theDiffFromStartTime = time - lastStrartTime;
-                        int DiffInSeconds = theDiffFromStartTime.Seconds;
-                        double precentFromSegment = (DiffInSeconds / seg.TimeInSeconds);
-                        double newLongitude = lastLongitude + (longitudeDiff * precentFromSegment);
-                        double newLatitude = lastLatitude + (latitudeDiff * precentFromSegment);
+                        double LatitudeDiff = precentOfTime * distanceOfAllSegment * Math.Cos(angle);
+                        double LongitudeDiff = precentOfTime * distanceOfAllSegment * Math.Sin(angle);
+                        double newLatitude, newLongitude;
+                        if (startLatitude < endlatitude )
+                        {
+                            newLatitude = startLatitude + LatitudeDiff;
+                        }
+                        else
+                        {
+                            newLatitude = startLatitude - LatitudeDiff;
+                        }
+                        if (startLongitude < endLongitude)
+                        {
+                            newLongitude = startLongitude + LongitudeDiff;
+                        }
+                        else
+                        {
+                            newLongitude = startLongitude - LongitudeDiff;
+                        }
                         Flight newFlight = new Flight();
                         newFlight.FlightId = fp.Id ;
                         newFlight.CompanyName = fp.CompanyName;
@@ -80,10 +81,9 @@ namespace FlightControlWeb.Models
                         newFlight.IsExternal = false;
                         newFlight.Latitude = newLatitude;
                         newFlight.Longitude = newLongitude;
-                        newFlight.Date = lastStrartTime.AddSeconds(DiffInSeconds);
+                        newFlight.Date = lastStrartTime.AddSeconds(theDiffFromStartTimeInSeconds);
                         flightList.Add(newFlight);
                     }
-
                 }
             }
 
