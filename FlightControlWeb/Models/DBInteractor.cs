@@ -23,13 +23,13 @@ namespace FlightControlWeb.Models
             modelBuilder.Entity<FlightPlan>().ToTable("FlightPlan");
             modelBuilder.Entity<InitialLocation>().ToTable("InitialLocation");
 
-            InitialLocation initLocation1 = new InitialLocation() { Longitude = 31.2, Latitude = 34.2, DateTime = DateTime.Now };
+           /* InitialLocation initLocation1 = new InitialLocation() { Longitude = 31.2, Latitude = 34.2, DateTime = DateTime.Now };
             InitialLocation initLocation12 = new InitialLocation() { Longitude = 31.7, Latitude = 34.5, DateTime = DateTime.Now };
 
             modelBuilder.Entity<FlightPlan>().HasData(
             new FlightPlan() { Id = 1, Passengers = 4, CompanyName = "combo", InitialLocation =  initLocation1, Segments = null },
             new FlightPlan() { Id = 2, Passengers = 3, CompanyName = "mmba", InitialLocation =initLocation12, Segments = null }
-            );
+            );*/
 
             modelBuilder.Entity<Server>().HasData(
             new Server() { Id = 1, Url = "testURL.com" }

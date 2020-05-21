@@ -41,7 +41,7 @@ namespace FlightControlWeb.Models
                 List<Segment> segmentList = GetFlightPlanSegments(flight.Id);
                 List<DateTime> startAndEndTime = GetStartAndEndTime(flight.Id, segmentList);
                 // if the flight active in the requierd time
-                if (startAndEndTime[0] >= time && startAndEndTime[1] <= time)
+                if (startAndEndTime[0] <= time && startAndEndTime[1] >= time)
                 {
                     relativeFlightPlan.Add(flight);
                 }
@@ -51,6 +51,9 @@ namespace FlightControlWeb.Models
 
         public List<Segment> GetFlightPlanSegments(long flightPlanid)
         {
+            List<Segment> segList = new List<Segment>();
+            segList = db.Segments.Where(s => s.FlightId == flightPlanid).ToList();
+            segList.OrderBy(s => s.Id);
             return db.Segments.Where(s => s.FlightId == flightPlanid).OrderBy(s => s.SegmentNumber).ToList();
 
         }
@@ -66,7 +69,7 @@ namespace FlightControlWeb.Models
             //adding the seconds to the startTime
             InitialLocation initLocation= db.InitLocations.Where(l => l.FlightId == flightId).First();
             DateTime endTime = initLocation.DateTime;
-            endTime.AddSeconds(seconds);
+            endTime = endTime.AddSeconds(seconds);
             List<DateTime> startAndEndTime = new List<DateTime>()
             {
                 initLocation.DateTime, endTime

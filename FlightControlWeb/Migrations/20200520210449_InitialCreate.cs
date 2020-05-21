@@ -93,16 +93,6 @@ namespace FlightControlWeb.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "FlightPlan",
-                columns: new[] { "Id", "CompanyName", "Passengers" },
-                values: new object[] { 1L, "combo", 4 });
-
-            migrationBuilder.InsertData(
-                table: "FlightPlan",
-                columns: new[] { "Id", "CompanyName", "Passengers" },
-                values: new object[] { 2L, "mmba", 3 });
-
-            migrationBuilder.InsertData(
                 table: "Servers",
                 columns: new[] { "Id", "Url" },
                 values: new object[] { 1L, "testURL.com" });

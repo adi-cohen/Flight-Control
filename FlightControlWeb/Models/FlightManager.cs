@@ -8,22 +8,25 @@ namespace FlightControlWeb.Models
     public class FlightManager
     {
         private IFlightPlanManager flightPlanManager;
-        private readonly DBInteractor db;
+        private  DBInteractor db;
 
-        FlightManager(IFlightPlanManager flightPlanManager)
+        public FlightManager(IFlightPlanManager flightPlanManager, DBInteractor newDb)
         {
+            this.db = newDb;
             this.flightPlanManager = flightPlanManager;
         }
         public List<Flight> getAllFlights (DateTime time)
         {
+            //get all active flights plans according to time
             List<FlightPlan> ActiveFlights = flightPlanManager.GetActiveFlights(time);
+
+            //create flights list
             List<Flight> flightList = new List<Flight>();
             foreach (FlightPlan fp in ActiveFlights)
             {
                 double lastLongitude = db.InitLocations.Where(i => i.FlightId == fp.Id).First().Longitude;
                 double lastLatitude = db.InitLocations.Where(i => i.FlightId == fp.Id).First().Latitude;
                 DateTime lastTime = db.InitLocations.Where(i => i.FlightId == fp.Id).First().DateTime;
-
 
                 List<Segment> segList = flightPlanManager.GetFlightPlanSegments(fp.Id);
                 foreach (Segment seg in segList)
@@ -36,10 +39,11 @@ namespace FlightControlWeb.Models
                         lastLatitude = seg.Latitude;
                         lastTime = newEndTime;
                     }
-                    else // the time is in the segment
+                    else // the requested time is in the segment
                     {
-                        double longitudeDiff = seg.Longitude - lastLongitude;
-                        double latitudeDiff = seg.Latitude - lastLatitude;
+                        double longitudeDiff = Math.Abs(seg.Longitude - lastLongitude);
+                        double latitudeDiff = Math.Abs(seg.Latitude - lastLatitude);
+                       // int precentOfTimeSpent ;
                         TimeSpan theDiffFromStartTime = time - lastTime;
                         int DiffInSeconds = theDiffFromStartTime.Seconds;
                         double precentFromSegment = (DiffInSeconds / seg.TimeInSeconds);
