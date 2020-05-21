@@ -11,7 +11,7 @@ namespace FlightControlWeb.Migrations
                 name: "Flight",
                 columns: table => new
                 {
-                    FlightId = table.Column<int>(nullable: false)
+                    FlightId = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Longitude = table.Column<double>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
@@ -91,16 +91,6 @@ namespace FlightControlWeb.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.InsertData(
-                table: "FlightPlan",
-                columns: new[] { "Id", "CompanyName", "Passengers" },
-                values: new object[] { 1L, "combo", 4 });
-
-            migrationBuilder.InsertData(
-                table: "FlightPlan",
-                columns: new[] { "Id", "CompanyName", "Passengers" },
-                values: new object[] { 2L, "mmba", 3 });
 
             migrationBuilder.InsertData(
                 table: "Servers",

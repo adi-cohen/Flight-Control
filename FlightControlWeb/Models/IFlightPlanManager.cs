@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    interface IFlightPlanManager
+   public  interface IFlightPlanManager
     {
         public void DeleteFlightPlan(int id);
         public FlightPlan GetFlightPlan(int id);
