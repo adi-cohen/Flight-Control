@@ -2,15 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Models;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace FlightControlWeb.Controllers
 {
@@ -29,12 +23,12 @@ namespace FlightControlWeb.Controllers
             manager = new FlightManager(new FlightPlanManager(context), context);
         }
 
-       /* // GET: api/Flights
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight()
-        {
-            return await _context.Flight.ToListAsync();
-        }*/
+        /* // GET: api/Flights
+         [HttpGet]
+         public async Task<ActionResult<IEnumerable<Flight>>> GetFlight()
+         {
+             return await _context.Flight.ToListAsync();
+         }*/
 
         // GET: api/Flights/
         [HttpGet("")]
@@ -46,9 +40,9 @@ namespace FlightControlWeb.Controllers
             List<Flight> flightList = new List<Flight>();
             if (ToSyncAll)
             {
-                // list to add Flight Objects
+                List<Flight> externalFlights = new List<Flight>();
 
-                // Build the request string to send. 
+                // Build the request string to send.
                 string request = "/api/Flights?relative_to=";
                 request += relative_to;
 
@@ -57,11 +51,17 @@ namespace FlightControlWeb.Controllers
                 {
                     string serverUrl = serv.Url;
                     request = serverUrl + request;
-                    // Send the request.
-                    dynamic response = await ServerManager.makeRequest(request);
+                    // Send the request and get Flight object.
+                    Flight response = await ServerManager.makeRequest(request);
+                    externalFlights.Add(response);
+                    // Add to flightId -> URL mapping.
+                    ExternalFlight newExtFlight = new ExternalFlight();
+                    newExtFlight.FlightId = response.FlightId;
+                    newExtFlight.ExternalServerUrl = serv.Url;
+                    _context.ExternalFlights.Add(newExtFlight);
                 }
             }
-            List<Flight> internalFlights =  manager.getAllFlights(UtcTime);
+            List<Flight> internalFlights = manager.getAllFlights(UtcTime);
             flightList.AddRange(internalFlights);
 
             string output = JsonConvert.SerializeObject(flightList);
@@ -69,7 +69,7 @@ namespace FlightControlWeb.Controllers
 
         }
 
-     
+
 
         // POST: api/Flights
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -77,14 +77,14 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<Flight>> PostFlight(Flight flight)
         {
-            _context.Flight.Add(flight);
+            //_context.Flight.Add(flight);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetFlight", new { id = flight.FlightId }, flight);
         }
 
         // DELETE: api/Flights/5
-        [HttpDelete("{id}")]
+        /*[HttpDelete("{id}")]
         public async Task<ActionResult<Flight>> DeleteFlight(int id)
         {
             var flight = await _context.Flight.FindAsync(id);
@@ -97,11 +97,11 @@ namespace FlightControlWeb.Controllers
             await _context.SaveChangesAsync();
 
             return flight;
-        }
+        }*/
 
-        private bool FlightExists(int id)
+        /*private bool FlightExists(int id)
         {
             return _context.Flight.Any(e => e.FlightId == id);
-        }
+        }*/
     }
 }

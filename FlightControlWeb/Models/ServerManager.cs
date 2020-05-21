@@ -19,9 +19,9 @@ namespace FlightControlWeb.Models
         public static async Task<dynamic> makeRequest(string uri)
         {
             var client = new HttpClient();
-            var result = await client.GetStringAsync(uri);
-            dynamic json = JsonConvert.DeserializeObject(result);
-            return json;
+            var jsonString = await client.GetStringAsync(uri);
+            dynamic result = JsonConvert.DeserializeObject<dynamic>(jsonString);
+            return result;
         }
 
         public List<Server> GetServers(long servId)

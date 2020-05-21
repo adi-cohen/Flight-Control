@@ -8,21 +8,16 @@ namespace FlightControlWeb.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Flight",
+                name: "ExternalFlights",
                 columns: table => new
                 {
                     FlightId = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Longitude = table.Column<double>(nullable: false),
-                    Latitude = table.Column<double>(nullable: false),
-                    Passengers = table.Column<int>(nullable: false),
-                    CompanyName = table.Column<string>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    IsExternal = table.Column<bool>(nullable: false)
+                    ExternalServerUrl = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Flight", x => x.FlightId);
+                    table.PrimaryKey("PK_ExternalFlights", x => x.FlightId);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,11 +87,6 @@ namespace FlightControlWeb.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Servers",
-                columns: new[] { "Id", "Url" },
-                values: new object[] { 1L, "testURL.com" });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Segments_FlightPlanId",
                 table: "Segments",
@@ -106,7 +96,7 @@ namespace FlightControlWeb.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Flight");
+                name: "ExternalFlights");
 
             migrationBuilder.DropTable(
                 name: "InitialLocation");
