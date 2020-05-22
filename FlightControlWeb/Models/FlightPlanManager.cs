@@ -82,7 +82,6 @@ namespace FlightControlWeb.Models
             Random rand = new Random();
             long id = rand.Next(10000, 999999999);
             return id;
-
         }
 
         public FlightPlan createNewFlightPlan(FlightPlan flightPlan)

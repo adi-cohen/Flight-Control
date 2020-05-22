@@ -3,26 +3,20 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FlightControlWeb.Migrations
 {
-    public partial class initialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Flight",
+                name: "ExternalFlights",
                 columns: table => new
                 {
-                    FlightId = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Longitude = table.Column<double>(nullable: false),
-                    Latitude = table.Column<double>(nullable: false),
-                    Passengers = table.Column<int>(nullable: false),
-                    CompanyName = table.Column<string>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    IsExternal = table.Column<bool>(nullable: false)
+                    FlightId = table.Column<string>(nullable: false),
+                    ExternalServerUrl = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Flight", x => x.FlightId);
+                    table.PrimaryKey("PK_ExternalFlights", x => x.FlightId);
                 });
 
             migrationBuilder.CreateTable(
@@ -37,6 +31,18 @@ namespace FlightControlWeb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FlightPlan", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IdNumbers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdNumbers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,8 +65,7 @@ namespace FlightControlWeb.Migrations
                 name: "Servers",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(nullable: false),
                     Url = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -93,9 +98,9 @@ namespace FlightControlWeb.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Servers",
-                columns: new[] { "Id", "Url" },
-                values: new object[] { 1L, "testURL.com" });
+                table: "ExternalFlights",
+                columns: new[] { "FlightId", "ExternalServerUrl" },
+                values: new object[] { "YEMO05", "http://ronyut2.atwebpages.com/ap2" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Segments_FlightPlanId",
@@ -106,7 +111,10 @@ namespace FlightControlWeb.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Flight");
+                name: "ExternalFlights");
+
+            migrationBuilder.DropTable(
+                name: "IdNumbers");
 
             migrationBuilder.DropTable(
                 name: "InitialLocation");

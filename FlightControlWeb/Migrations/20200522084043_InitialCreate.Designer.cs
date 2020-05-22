@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightControlWeb.Migrations
 {
     [DbContext(typeof(DBInteractor))]
-    [Migration("20200521130648_initialCreate")]
-    partial class initialCreate
+    [Migration("20200522084043_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,33 +18,24 @@ namespace FlightControlWeb.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.4");
 
-            modelBuilder.Entity("FlightControlWeb.Models.Flight", b =>
+            modelBuilder.Entity("FlightControlWeb.Models.ExternalFlight", b =>
                 {
-                    b.Property<long>("FlightId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CompanyName")
+                    b.Property<string>("FlightId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<string>("ExternalServerUrl")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsExternal")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("Passengers")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("FlightId");
 
-                    b.ToTable("Flight");
+                    b.ToTable("ExternalFlights");
+
+                    b.HasData(
+                        new
+                        {
+                            FlightId = "YEMO05",
+                            ExternalServerUrl = "http://ronyut2.atwebpages.com/ap2"
+                        });
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.FlightPlan", b =>
@@ -62,6 +53,17 @@ namespace FlightControlWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FlightPlan");
+                });
+
+            modelBuilder.Entity("FlightControlWeb.Models.IdNumber", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IdNumbers");
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.InitialLocation", b =>
@@ -120,9 +122,8 @@ namespace FlightControlWeb.Migrations
 
             modelBuilder.Entity("FlightControlWeb.Models.Server", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
@@ -130,13 +131,6 @@ namespace FlightControlWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Servers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Url = "testURL.com"
-                        });
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.Segment", b =>

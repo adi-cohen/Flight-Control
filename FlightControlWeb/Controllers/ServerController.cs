@@ -23,13 +23,14 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<IEnumerable<Server>>> GetServers()
         {
             return await db.Servers.ToListAsync();
-
         }
 
         // POST: api/Server
         [HttpPost]
         public async void PostServer([FromBody] Server serv)
         {
+            IdGenerator generator = new IdGenerator(db);
+            serv.Id = generator.GanerateID();
             db.Servers.Add(serv);
             await db.SaveChangesAsync();
         }
