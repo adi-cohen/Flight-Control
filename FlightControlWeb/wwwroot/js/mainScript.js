@@ -1,4 +1,11 @@
 ﻿let mymap = L.map('mapId').setView([51.505, -0.09], 1);
+let polyline;
+mymap.on('click', function () {
+    if (polyline) {
+        polyline.remove(mymap);
+        $('.flightDetails').html('');
+    }
+});
 createMap();
 
 let func = function dataUpdate() {
@@ -123,6 +130,9 @@ function getFinishTime(startTime, seconds) {
 }
 
 function drawPath(segments, initial_location) {
+    if (polyline) {
+        polyline.remove(mymap);
+    }
 
     let lon = initial_location.longitude;
     let lat = initial_location.latitude;
@@ -131,7 +141,8 @@ function drawPath(segments, initial_location) {
     for (let i = 0; i < len; i++) {
         path.push([segments[i].longitude, segments[i].latitude]);
     }
-    let polyline = L.polyline(path, { color: 'red' }).addTo(mymap);
+    polyline = L.polyline(path, { color: 'red' });
+    polyline.addTo(mymap);
     mymap.fitBounds(polyline.getBounds());
 
 }
@@ -245,4 +256,5 @@ function testGetDetails(event) {
 function testRemove(event) {
     console.log("you asked for Deletion!");
 }
+
 setInterval(func, 3000);
