@@ -14,7 +14,7 @@ namespace FlightControlWeb.Models
         public List<FlightPlan> GetActiveFlights(DateTime time);
         public long GanerateID();
 
-        public List<Segment> GetFlightPlanSegments(long id);
+        public List<Segment> GetFlightPlanSegments(string id);
 
 
         

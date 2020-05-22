@@ -47,16 +47,18 @@ namespace FlightControlWeb.Controllers
                 // Pass the HTTP request to all registered external servers.
                 foreach (Server serv in db.Servers)
                 {
-                    string serverUrl = serv.Url;
-                    request = serverUrl + request;
-                    // Send the request and get Flight object.
-                    Flight response = await ServerManager.makeRequest(request);
-                    externalFlights.Add(response);
-                    // Add to flightId -> URL mapping.
-                    ExternalFlight newExtFlight = new ExternalFlight();
-                    newExtFlight.FlightId = response.FlightId;
-                    newExtFlight.ExternalServerUrl = serv.Url;
-                    db.ExternalFlights.Add(newExtFlight);
+                    /*string serverUrl = serv.Url;
+                     request = serverUrl + request;
+                     // Send the request and get Flight object.
+                     Flight response = await ServerManager.makeRequest(request);
+                     externalFlights.Add(response);
+                     // Add to flightId -> URL mapping.
+                     ExternalFlight newExtFlight = new ExternalFlight();
+                     newExtFlight.FlightId = response.FlightId;
+                     newExtFlight.ExternalServerUrl = serv.Url;
+                     db.ExternalFlights.Add(newExtFlight);*/
+
+                    // dont forget add the flights to flightList
                 }
             }
             List<Flight> internalFlights = manager.getAllFlights(UtcTime);
@@ -69,9 +71,9 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<HttpStatusCode>> DeleteFlight(int id)
+        public async Task<ActionResult<HttpStatusCode>> DeleteFlight(string id)
         {
-            long? deletedId =  manager.RemoveFlight(id);
+            string deletedId =  manager.RemoveFlight(id);
             if (deletedId == null)
             {
                 return NotFound();
