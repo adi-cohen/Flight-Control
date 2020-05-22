@@ -19,10 +19,6 @@ let func = function dataUpdate() {
             let len = response.length;
             console.log("rsponse length: " + len);
             for (let i = 0; i < len; i++) {
-                console.log("i is: " + i);
-
-                console.log("rsponse is666: " + response[1].flight_id);
-                console.log("rsponse is666: " + response[2].flight_id);
 
 
                 if (response[i].is_external == 1) {
@@ -32,11 +28,7 @@ let func = function dataUpdate() {
                     addToMyFlight(response[i]);
                     //console.log(response[i]);
                 }
-                console.log("before add to map");
-
                 addToMap(response[i]);
-                console.log("after add to map");
-
             }
         }
     });
@@ -66,7 +58,7 @@ function addToMap(flight) {
     });
     //blackIcon.className = flight.id;
     //let marker1 = L.marker([flight.longitude, flight.latitude], { icon: blackIcon }).addTo(mymap);
-    let marker1 = L.marker([flight.longitude, flight.latitude]).addTo(mymap);
+    let marker1 = L.marker([4, 120]).addTo(mymap);
 
     marker1.className = flight.flight_id;
     marker1.on('click', showFlightDetails);
