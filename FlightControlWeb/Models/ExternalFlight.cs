@@ -8,7 +8,7 @@ namespace FlightControlWeb.Models
     {
         [Key]
         [JsonPropertyName("flight_id")]
-        public long FlightId { get; set; }
+        public string FlightId { get; set; }
 
         [JsonPropertyName("external_url")]
         public string ExternalServerUrl { get; set; }

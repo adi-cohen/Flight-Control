@@ -14,8 +14,8 @@ namespace FlightControlWeb.Models
             _db = db;
         }
 
-        // Generate random ID number.
-        public long GanerateID()
+        // Generate random ID number string.
+        public string GanerateID()
         {
             Random rand = new Random();
             IdNumber generated_id, ret;
@@ -30,7 +30,7 @@ namespace FlightControlWeb.Models
 
             // Add to DB.
             _db.IdNumbers.Add(generated_id);
-            return generated_id.Id;
+            return generated_id.Id.ToString();
         }
     }
 

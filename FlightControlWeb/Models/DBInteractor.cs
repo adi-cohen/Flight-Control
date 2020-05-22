@@ -27,7 +27,9 @@ namespace FlightControlWeb.Models
             modelBuilder.Entity<ExternalFlight>().ToTable("ExternalFlights");
             modelBuilder.Entity<IdNumber>().ToTable("IdNumbers");
 
+            ExternalFlight flight1 = new ExternalFlight() { FlightId = "YEMO05", ExternalServerUrl = "http://ronyut2.atwebpages.com/ap2" };
 
+            modelBuilder.Entity<ExternalFlight>().HasData(flight1);
 
 
 

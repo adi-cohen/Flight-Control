@@ -47,9 +47,9 @@ namespace FlightControlWeb.Controllers
                 Console.WriteLine(sync);
 
                 // Pass the HTTP request to all registered external servers.
-                foreach (Server serv in _context.Servers)
+                foreach (Server serv in db.Servers)
                 {
-                    string serverUrl = serv.Url;
+                    /*string serverUrl = serv.Url;
                     request = serverUrl + request;
                     // Send the request and get Flight object.
                     Flight response = await ServerManager.makeRequest(request);
@@ -58,7 +58,7 @@ namespace FlightControlWeb.Controllers
                     ExternalFlight newExtFlight = new ExternalFlight();
                     newExtFlight.FlightId = response.FlightId;
                     newExtFlight.ExternalServerUrl = serv.Url;
-                    _context.ExternalFlights.Add(newExtFlight);
+                    db.ExternalFlights.Add(newExtFlight);*/
                 }
             }
             List<Flight> internalFlights = manager.getAllFlights(UtcTime);

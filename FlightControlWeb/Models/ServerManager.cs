@@ -24,7 +24,7 @@ namespace FlightControlWeb.Models
             return result;
         }
 
-        public List<Server> GetServers(long servId)
+        public List<Server> GetServers(string servId)
         {
             return _db.Servers.Where(s => s.Id == servId).ToList();
         }
