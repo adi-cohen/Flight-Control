@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.VisualBasic.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Net;
 
 namespace FlightControlWeb.Controllers
 {
@@ -12,23 +15,17 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly DBInteractor _context;
         private readonly ServerManager _servManager;
+        private readonly DBInteractor db;
         private FlightManager manager;
 
         public FlightsController(DBInteractor context, ServerManager servManager)
         {
-            _context = context;
-            _servManager = servManager;
+            db = context;
             manager = new FlightManager(new FlightPlanManager(context), context);
         }
 
-        /* // GET: api/Flights
-         [HttpGet]
-         public async Task<ActionResult<IEnumerable<Flight>>> GetFlight()
-         {
-             return await _context.Flight.ToListAsync();
-         }*/
+        
 
         // GET: api/Flights/
         [HttpGet("")]
@@ -72,39 +69,17 @@ namespace FlightControlWeb.Controllers
 
         }
 
-
-
-        // POST: api/Flights
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Flight>> PostFlight(Flight flight)
-        {
-            //_context.Flight.Add(flight);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFlight", new { id = flight.FlightId }, flight);
-        }
-
         // DELETE: api/Flights/5
-        /*[HttpDelete("{id}")]
-        public async Task<ActionResult<Flight>> DeleteFlight(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<HttpStatusCode>> DeleteFlight(int id)
         {
-            var flight = await _context.Flight.FindAsync(id);
-            if (flight == null)
+            long? deletedId =  manager.RemoveFlight(id);
+            if (deletedId == null)
             {
                 return NotFound();
             }
+            return HttpStatusCode.NoContent; 
+        }
 
-            _context.Flight.Remove(flight);
-            await _context.SaveChangesAsync();
-
-            return flight;
-        }*/
-
-        /*private bool FlightExists(int id)
-        {
-            return _context.Flight.Any(e => e.FlightId == id);
-        }*/
     }
 }

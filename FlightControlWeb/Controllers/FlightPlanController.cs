@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Models;
+using Newtonsoft.Json;
 
 namespace FlightControlWeb.Controllers
 {
@@ -23,22 +24,12 @@ namespace FlightControlWeb.Controllers
             servManager = new ServerManager(db);
         }
 
-
-        /*// GET: api/FlightPlan
-        // return all flights plan
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<FlightPlan>>> GetFlightPlans()
-        {
-            return await db.FlightPlans.ToListAsync();
-        }*/
-
         // GET: api/FlightPlan/5
         //return flight plan by id
         [HttpGet("{id}")]
-        public async Task<ActionResult<FlightPlan>> GetFlightPlan(long id)
+        public async Task<ActionResult<string>> GetFlightPlan(long id)
         {
-            var flightPlan = await db.FlightPlans.FindAsync(id);
-
+            FlightPlan flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
             {
                 /*var extFlightPlan = await db.ExternalFlights.FindAsync(id);
@@ -49,7 +40,15 @@ namespace FlightControlWeb.Controllers
                 return NotFound();
 
             }
-            return flightPlan;
+            List<Segment> flightSegments = db.Segments.Where(s => s.FlightId == flightPlan.Id).ToList();
+            InitialLocation flightinitLocation = db.InitLocations.Where(i => i.FlightId == flightPlan.Id).First();
+            DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
+            UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
+            flightinitLocation.DateTime = UtcTime;
+            flightPlan.Segments = flightSegments;
+            flightPlan.InitialLocation = flightinitLocation;
+            string output = JsonConvert.SerializeObject(flightPlan);
+            return output;
         }
 
         
@@ -63,58 +62,11 @@ namespace FlightControlWeb.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-            //generate random id
-            long FlightId = manager.GanerateID();
-            flightPlan.Id = FlightId;
-            db.FlightPlans.Add(flightPlan);
-            
-            //adding all segments to DB
-            int segmentNum = 1;
-            foreach (Segment element in flightPlan.Segments)
-            {
-                //adding segment number for segments in the same flight plan
-                element.SegmentNumber = segmentNum;
-                segmentNum ++;
-                element.FlightId = FlightId;
-                element.Id = manager.GanerateID();
-                db.Segments.Add(element);
-            }
 
-            //adding InitialLocation to DB
-            flightPlan.InitialLocation.FlightId = FlightId;
-            flightPlan.InitialLocation.Id = manager.GanerateID();
-            db.InitLocations.Add(flightPlan.InitialLocation);
-
-            await db.SaveChangesAsync();
-            return CreatedAtAction("GetFlightPlan", new { id = flightPlan.Id }, flightPlan);
+            FlightPlan flight =  manager.createNewFlightPlan(flightPlan);
+            return CreatedAtAction("GetFlightPlan", new { id = flight.Id }, flight);
         }
 
-        // DELETE: api/FlightPlan/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<FlightPlan>> DeleteFlightPlan(long id)
-        {
-            var flightPlan = await db.FlightPlans.FindAsync(id);
-            if (flightPlan == null)
-            {
-                return NotFound();
-            }
-            //delete all the segment of the flight
-            List<Segment> segmentToDelete = db.Segments.Where(e => e.FlightId == id).ToList();
-            foreach (Segment s in segmentToDelete)
-            {
-                db.Segments.Remove(s);
-            }
-
-            //delete the initial location of the flight
-            InitialLocation initLocationToDelete = db.InitLocations.Where(e => e.FlightId == id).First();
-            db.InitLocations.Remove(initLocationToDelete);
-
-            //delete the flight plan
-            db.FlightPlans.Remove(flightPlan);
-            await db.SaveChangesAsync();
-            return flightPlan;
-        }
-
-        
+   
     }
 }

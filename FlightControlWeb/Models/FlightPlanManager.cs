@@ -84,6 +84,32 @@ namespace FlightControlWeb.Models
             return id;
         }
 
-      
+        public FlightPlan createNewFlightPlan(FlightPlan flightPlan)
+        {
+            //generate random id
+            long FlightId = GanerateID();
+            flightPlan.Id = FlightId;
+            db.FlightPlans.Add(flightPlan);
+
+            //adding all segments to DB
+            int segmentNum = 1;
+            foreach (Segment element in flightPlan.Segments)
+            {
+                //adding segment number for segments in the same flight plan
+                element.SegmentNumber = segmentNum;
+                segmentNum++;
+                element.FlightId = FlightId;
+                element.Id = GanerateID();
+                db.Segments.Add(element);
+            }
+
+            //adding InitialLocation to DB
+            flightPlan.InitialLocation.FlightId = FlightId;
+            flightPlan.InitialLocation.Id = GanerateID();
+            db.InitLocations.Add(flightPlan.InitialLocation);
+
+            db.SaveChanges();
+            return flightPlan;
+        }
     }
 }
