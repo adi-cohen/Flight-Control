@@ -4,11 +4,11 @@ createMap();
 let func = function dataUpdate() {
     //let getOptions = prepareGetAll();
     let date = getDate();
-    console.log(date);
+    //console.log(date);
     let url = "/api/Flights?relative_to=".concat(date).concat("&sync_all");
     //let url = "http://ronyut.atwebpages.com/ap2/api/Flights?relative_to=".concat(date);
 
-    console.log("url is: " + url);
+    //console.log("url is: " + url);
     //let url = "api/FlightPlan"
     $.ajax({
         url: url,
@@ -17,14 +17,7 @@ let func = function dataUpdate() {
         success: function (response) {
             clearLists();
             let len = response.length;
-            console.log("rsponse length: " + len);
             for (let i = 0; i < len; i++) {
-                console.log("i is: " + i);
-
-                /*console.log("rsponse is666: " + response[1].flight_id);
-                console.log("rsponse is666: " + response[2].flight_id);*/
-
-
                 if (response[i].is_external == 1) {
                     addToExtFlight(response[i]);
                     //testFunc();
@@ -32,10 +25,8 @@ let func = function dataUpdate() {
                     addToMyFlight(response[i]);
                     //console.log(response[i]);
                 }
-                console.log("before add to map");
 
                 addToMap(response[i]);
-                console.log("after add to map");
 
             }
         }
@@ -78,8 +69,6 @@ function addToMap(flight) {
 
 function flightSelected(event) {
     let url = "/api/FlightPlan/".concat(this.className);
-    console.log("urlurlurlurlurlurlurlurlurlurlurlurl");
-    console.log(url);
     $.ajax({
         url: url,
         type: 'GET',
@@ -93,25 +82,50 @@ function flightSelected(event) {
     });
 }
 function showFlightDetails(details) {
-    console.log("000000000000000000000000");
-    console.log(details);
-    console.log(details.initial_location);
+
     drawPath(details.segments, details.initial_location);
     //changeIcon();
     writeDetails(details);
 }
 
 function writeDetails(details) {
-    let row = document.getElementById("flightDetails");
-    row.innerText = "Flight Details: ".concat(JSON.stringify(details));
+    let startPoint = document.getElementById("startPointID");
+    let endPoint = document.getElementById("endPointID");
+    let departureTime = document.getElementById("departureTimeID");
+    let arrivalTime = document.getElementById("arrivalTimeID");
+    let companyName = document.getElementById("companyNameID");
+    let passengersCount = document.getElementById("passengersCountID");
+    // get time of the flight in seconds
+    let len = details.segments.length;
+    let secondsSum = 0;
+    for (let i = 0; i < len; i++) {
+        secondsSum += details.segments[i].timespan_seconds;
+    }
+    // print details
+    startPoint.innerHTML = "start Point: (" + details.initial_location.longitude
+        + "," + details.initial_location.latitude + ")";
+    endPoint.innerHTML = "end Point: (" + details.segments[details.segments.length - 1].longitude
+        + "," + details.segments[details.segments.length - 1].latitude + ")";
+    departureTime.innerHTML = "departure time: " + details.initial_location.date_time.replace('T', ' ').replace('Z', '');
+    arrivalTime.innerHTML = "arrival time: " + getFinishTime(details.initial_location.date_time, secondsSum);
+    companyName.innerHTML = "company name time: " + details.company_name;
+    passengersCount.innerHTML = "passengers: " + details.passengers;
+
+   
+   
+}
+
+function getFinishTime(startTime, seconds) {
+    let time = new Date(startTime);
+    time = new Date(time.getTime() + (seconds * 1000)).toISOString();
+    time = time.toString().split('.')[0].replace('T', ' ');
+    return time;
 }
 
 function drawPath(segments, initial_location) {
-    console.log("11111111111111111111111");
-    console.log(initial_location);
+
     let lon = initial_location.longitude;
     let lat = initial_location.latitude;
-    console.log("22222222222222222222222");
     let len = segments.length;
     let path = [ [lon,lat] ];
     for (let i = 0; i < len; i++) {
@@ -183,9 +197,7 @@ function addToMyFlight(flight) {
     myFlightsElRow.appendChild(myFlightElCl2);
     myFlights.appendChild(myFlightsElRow);
 
-    //debug
-    console.log(JSON.stringify(flight));
-    console.log("finish inside flights");
+
 
 }
 
@@ -206,9 +218,7 @@ function addToExtFlight(flight) {
     myFlightsElRow.appendChild(myFlightElCl1);
     myFlights.appendChild(myFlightsElRow);
 
-    //debug
-    console.log(JSON.stringify(flight));
-    console.log("finish inside flights");
+
 
 
 
