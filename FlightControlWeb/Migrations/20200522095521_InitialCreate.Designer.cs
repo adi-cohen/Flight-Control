@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightControlWeb.Migrations
 {
     [DbContext(typeof(DBInteractor))]
-    [Migration("20200521154430_InitialCreate‏")]
-    partial class InitialCreate‏
+    [Migration("20200522095521_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

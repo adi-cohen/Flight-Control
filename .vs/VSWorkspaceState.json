@@ -1,10 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\FlightControlWeb",
-    "\\FlightControlWeb\\Controllers",
-    "\\FlightControlWeb\\wwwroot",
-    "\\FlightControlWeb\\wwwroot\\js"
+    ""
   ],
   "SelectedNode": "\\FlightControl.sln",
   "PreviewInSolutionExplorer": false
