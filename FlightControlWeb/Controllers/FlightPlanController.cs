@@ -42,10 +42,10 @@ namespace FlightControlWeb.Controllers
             string serverUrl = extFlightPlan.ExternalServerUrl;
             request = serverUrl + request;
             // Send the request and get FlightPlan object.
-            //FlightPlan response = await ServerManager.makeRequest(request);
-            var client = new HttpClient();
+            var response = await ServerManager.makeRequest(request);
+/*            var client = new HttpClient();
             var jsonString = await client.GetStringAsync(request);
-            FlightPlan result = JsonConvert.DeserializeObject<FlightPlan>(jsonString);
+*/            FlightPlan result = JsonConvert.DeserializeObject<FlightPlan>(response);
             flightPlan = result;
 
 

@@ -16,12 +16,12 @@ namespace FlightControlWeb.Models
             _db = db;
         }
 
-        public static async Task<dynamic> makeRequest(string uri)
+        public static async Task<string> makeRequest(string uri)
         {
             var client = new HttpClient();
             var jsonString = await client.GetStringAsync(uri);
-            dynamic result = JsonConvert.DeserializeObject<dynamic>(jsonString);
-            return result;
+            /*dynamic result = JsonConvert.DeserializeObject<dynamic>(jsonString);*/
+            return jsonString;
         }
 
         public List<Server> GetServers(string servId)
