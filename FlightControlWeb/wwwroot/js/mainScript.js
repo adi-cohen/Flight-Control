@@ -21,8 +21,8 @@ let func = function dataUpdate() {
             for (let i = 0; i < len; i++) {
                 console.log("i is: " + i);
 
-                console.log("rsponse is666: " + response[1].flight_id);
-                console.log("rsponse is666: " + response[2].flight_id);
+                /*console.log("rsponse is666: " + response[1].flight_id);
+                console.log("rsponse is666: " + response[2].flight_id);*/
 
 
                 if (response[i].is_external == 1) {
@@ -98,7 +98,12 @@ function showFlightDetails(details) {
     console.log(details.initial_location);
     drawPath(details.segments, details.initial_location);
     //changeIcon();
-    //writeDetails();
+    writeDetails(details);
+}
+
+function writeDetails(details) {
+    let row = document.getElementById("flightDetails");
+    row.innerText = "Flight Details: ".concat(JSON.stringify(details));
 }
 
 function drawPath(segments, initial_location) {
@@ -107,7 +112,7 @@ function drawPath(segments, initial_location) {
     let lon = initial_location.longitude;
     let lat = initial_location.latitude;
     console.log("22222222222222222222222");
-    let len = segments.length();
+    let len = segments.length;
     let path = [ [lon,lat] ];
     for (let i = 0; i < len; i++) {
         path.push([segments[i].longitude, segments[i].latitude]);
