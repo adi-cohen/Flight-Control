@@ -99,8 +99,8 @@
             <icon type="delete" style={{ fontSize: "20px", color: "#CC160B" }} theme="outlined" onclick="testRemove(event)"></icon>
         </option>
     </select>-->
-            <table id="table" style="cursor: pointer;" border="1">
-                <tbody id="myFlightList" style="margin-left:10px; display: block; align-content:center ; height: 150px; max-width: 100%; overflow-y: scroll">
+            <table id="table" style="cursor: pointer;min-width:90%; margin-bottom:10px" border="1" align="center">
+                <tbody id="myFlightList" style="margin-left:10px;font-size:medium; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
 
                 </tbody>
             </table>
@@ -113,8 +113,11 @@
 
         <div class="column side">
             <h2>Ext. Flights</h2>
-            <select id="extFlightList" name="extFlightsList" size="5" style="width: 90%; text-align: center">
-            </select>
+            <table id="extTable" name="extFlightsList"style="cursor: pointer;min-width:90%;margin-bottom:10px" border="1" align="center">
+                <tbody id="extFlightList" style="margin-left:10px; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
+
+                </tbody>
+            </table>
         </div>
     </div>
 
