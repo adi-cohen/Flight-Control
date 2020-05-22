@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightControlWeb.Migrations
 {
     [DbContext(typeof(DBInteractor))]
-    [Migration("20200521105413_InitialCreate")]
+    [Migration("20200521143634_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,6 +47,17 @@ namespace FlightControlWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FlightPlan");
+                });
+
+            modelBuilder.Entity("FlightControlWeb.Models.IdNumber", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IdNumbers");
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.InitialLocation", b =>

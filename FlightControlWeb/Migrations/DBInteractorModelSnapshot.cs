@@ -47,6 +47,17 @@ namespace FlightControlWeb.Migrations
                     b.ToTable("FlightPlan");
                 });
 
+            modelBuilder.Entity("FlightControlWeb.Models.IdNumber", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IdNumbers");
+                });
+
             modelBuilder.Entity("FlightControlWeb.Models.InitialLocation", b =>
                 {
                     b.Property<long>("Id")

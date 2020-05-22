@@ -15,11 +15,12 @@ namespace FlightControlWeb.Controllers
     {
         private readonly DBInteractor db;
         private readonly IFlightPlanManager manager;
+        private readonly ServerManager servManager;
         public FlightPlanController(DBInteractor newDb)
         {
             db = newDb;
             manager = new FlightPlanManager(db);
-
+            servManager = new ServerManager(db);
         }
 
 
@@ -40,7 +41,13 @@ namespace FlightControlWeb.Controllers
 
             if (flightPlan == null)
             {
+                /*var extFlightPlan = await db.ExternalFlights.FindAsync(id);
+                if (extFlightPlan == null)
+                {
+                }
+                // find flight by id*/
                 return NotFound();
+
             }
             return flightPlan;
         }

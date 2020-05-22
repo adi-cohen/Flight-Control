@@ -45,6 +45,9 @@ namespace FlightControlWeb.Controllers
                 // Build the request string to send.
                 string request = "/api/Flights?relative_to=";
                 request += relative_to;
+                Console.WriteLine(relative_to);
+                Console.WriteLine("XXX");
+                Console.WriteLine(sync);
 
                 // Pass the HTTP request to all registered external servers.
                 foreach (Server serv in _context.Servers)

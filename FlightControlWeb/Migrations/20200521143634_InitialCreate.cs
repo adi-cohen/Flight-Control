@@ -35,6 +35,18 @@ namespace FlightControlWeb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "IdNumbers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdNumbers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InitialLocation",
                 columns: table => new
                 {
@@ -97,6 +109,9 @@ namespace FlightControlWeb.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ExternalFlights");
+
+            migrationBuilder.DropTable(
+                name: "IdNumbers");
 
             migrationBuilder.DropTable(
                 name: "InitialLocation");
