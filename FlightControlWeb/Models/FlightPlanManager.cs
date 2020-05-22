@@ -9,10 +9,13 @@ namespace FlightControlWeb.Models
     public class FlightPlanManager : IFlightPlanManager
     {
         private readonly DBInteractor db;
+        private IdGenerator generator;
 
         public FlightPlanManager(DBInteractor newDb)
         {
             db = newDb;
+             generator = new IdGenerator(db);
+
         }
         public void AddFlightPlan(FlightPlan flightplan)
         {
@@ -49,7 +52,7 @@ namespace FlightControlWeb.Models
             return relativeFlightPlan;
         }
 
-        public List<Segment> GetFlightPlanSegments(long flightPlanid)
+        public List<Segment> GetFlightPlanSegments(string flightPlanid)
         {
             List<Segment> segList = new List<Segment>();
             segList = db.Segments.Where(s => s.FlightId == flightPlanid).ToList();
@@ -58,7 +61,7 @@ namespace FlightControlWeb.Models
 
         }
 
-        private List<DateTime> GetStartAndEndTime(long flightId, List<Segment> segList)
+        private List<DateTime> GetStartAndEndTime(string flightId, List<Segment> segList)
         {
             long seconds = 0;
             //sum all the seconds during the flight
@@ -87,7 +90,7 @@ namespace FlightControlWeb.Models
         public FlightPlan createNewFlightPlan(FlightPlan flightPlan)
         {
             //generate random id
-            long FlightId = GanerateID();
+            string FlightId =  generator.GanerateID();
             flightPlan.Id = FlightId;
             db.FlightPlans.Add(flightPlan);
 
@@ -99,13 +102,13 @@ namespace FlightControlWeb.Models
                 element.SegmentNumber = segmentNum;
                 segmentNum++;
                 element.FlightId = FlightId;
-                element.Id = GanerateID();
+                element.Id = generator.GanerateID();
                 db.Segments.Add(element);
             }
 
             //adding InitialLocation to DB
             flightPlan.InitialLocation.FlightId = FlightId;
-            flightPlan.InitialLocation.Id = GanerateID();
+            flightPlan.InitialLocation.Id = generator.GanerateID();
             db.InitLocations.Add(flightPlan.InitialLocation);
 
             db.SaveChanges();

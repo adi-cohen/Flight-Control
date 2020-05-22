@@ -28,12 +28,5 @@ namespace FlightControlWeb.Models
         {
             return _db.Servers.Where(s => s.Id == servId).ToList();
         }
-
-        public long GanerateID()
-        {
-            Random rand = new Random();
-            long id = rand.Next(10000, 999999999);
-            return id;
-        }
     }
 }

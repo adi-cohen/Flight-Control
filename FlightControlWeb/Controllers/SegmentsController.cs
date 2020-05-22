@@ -45,7 +45,7 @@ namespace FlightControlWeb.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSegment(long id, Segment segment)
+        public async Task<IActionResult> PutSegment(string id, Segment segment)
         {
             if (id != segment.Id)
             {
@@ -101,7 +101,7 @@ namespace FlightControlWeb.Controllers
             return segment;
         }
 
-        private bool SegmentExists(long id)
+        private bool SegmentExists(string id)
         {
             return _context.Segments.Any(e => e.Id == id);
         }
