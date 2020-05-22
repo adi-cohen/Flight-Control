@@ -24,13 +24,21 @@ function drop(event) {
         .catch(error => console.log(error))
 }
 
-let ContentType = 'application/json;charset=utf-8'
+
 function preparePost(file) {
-    let jsonObj = '{"passengers": 150,"company_name": "SwissAir", "initial_location": {"longitude": 20.0,"latitude": 30.2,"date_time": "2020-12-27T01:56:21Z"}';
-    let fileAsStr = JSON.stringify(jsonObj);
+    
+    let ContentType = 'application/json;charset=utf-8'
+    //let fileAsStr = JSON.stringify(file);
+    let reader = new FileReader();
+    let fileAsStr = JSON.stringify(reader.readAsText(file));
     //console.log(file);
-    console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXx");
-    console.log(fileAsStr)
+    /*let jhr = new XMLHttpRequest();
+    jhr.open("POST", "/api/FlightPlan", true);
+    jhr.setRequestHeader("Content-Type", "application/json");
+    jhr.send(jdata);*/
+
+
+
     return {
         "method": "POST",
         "headers": {'Content-Type': ContentType },
