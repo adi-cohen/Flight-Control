@@ -19,10 +19,11 @@ namespace FlightControlWeb.Controllers
         private readonly DBInteractor db;
         private FlightManager manager;
 
-        public FlightsController(DBInteractor context, ServerManager servManager)
+        public FlightsController(DBInteractor context)
         {
             db = context;
             manager = new FlightManager(new FlightPlanManager(context), context);
+            _servManager = new ServerManager(context);
         }
 
         
@@ -42,14 +43,11 @@ namespace FlightControlWeb.Controllers
                 // Build the request string to send.
                 string request = "/api/Flights?relative_to=";
                 request += relative_to;
-                Console.WriteLine(relative_to);
-                Console.WriteLine("XXX");
-                Console.WriteLine(sync);
 
                 // Pass the HTTP request to all registered external servers.
                 foreach (Server serv in db.Servers)
                 {
-                    /*string serverUrl = serv.Url;
+                    string serverUrl = serv.Url;
                     request = serverUrl + request;
                     // Send the request and get Flight object.
                     Flight response = await ServerManager.makeRequest(request);
@@ -58,7 +56,7 @@ namespace FlightControlWeb.Controllers
                     ExternalFlight newExtFlight = new ExternalFlight();
                     newExtFlight.FlightId = response.FlightId;
                     newExtFlight.ExternalServerUrl = serv.Url;
-                    db.ExternalFlights.Add(newExtFlight);*/
+                    db.ExternalFlights.Add(newExtFlight);
                 }
             }
             List<Flight> internalFlights = manager.getAllFlights(UtcTime);

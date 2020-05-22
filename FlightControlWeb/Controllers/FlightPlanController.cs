@@ -30,27 +30,9 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<string>> GetFlightPlan(string id)
         {
-            FlightPlan flightPlan;
-            // If not found, search for the id in external flights.
-            ExternalFlight extFlightPlan = await db.ExternalFlights.FindAsync(id);
-            if (extFlightPlan == null)
-            {
-                return NotFound();
-            }
-            // Build request string.
-            string request = "/api/FlightPlan/" + id;
-            string serverUrl = extFlightPlan.ExternalServerUrl;
-            request = serverUrl + request;
-            // Send the request and get FlightPlan object.
-            var response = await ServerManager.makeRequest(request);
-/*            var client = new HttpClient();
-            var jsonString = await client.GetStringAsync(request);
-*/            FlightPlan result = JsonConvert.DeserializeObject<FlightPlan>(response);
-            flightPlan = result;
-
-
+            FlightPlan flightPlan = null;
             // Search in local flight plans.
-            /*FlightPlan flightPlan = await db.FlightPlans.FindAsync(id);
+            //FlightPlan flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
             {
                 // If not found, search for the id in external flights.
@@ -64,9 +46,9 @@ namespace FlightControlWeb.Controllers
                 string serverUrl = extFlightPlan.ExternalServerUrl;
                 request = serverUrl + request;
                 // Send the request and get FlightPlan object.
-                FlightPlan response = await ServerManager.makeRequest(request);
-                flightPlan = response;
-            }*/
+                var response = await ServerManager.makeRequest(request);
+                flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);
+            }
             /*List<Segment> flightSegments = db.Segments.Where(s => s.FlightId == flightPlan.Id).ToList();
             InitialLocation flightinitLocation = db.InitLocations.Where(i => i.FlightId == flightPlan.Id).First();
             DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
