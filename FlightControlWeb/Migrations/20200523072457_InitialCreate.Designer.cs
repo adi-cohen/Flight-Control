@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightControlWeb.Migrations
 {
     [DbContext(typeof(DBInteractor))]
-    [Migration("20200522084043_InitialCreate")]
+    [Migration("20200523072457_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,16 +33,15 @@ namespace FlightControlWeb.Migrations
                     b.HasData(
                         new
                         {
-                            FlightId = "YEMO05",
+                            FlightId = "WUWA41",
                             ExternalServerUrl = "http://ronyut2.atwebpages.com/ap2"
                         });
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.FlightPlan", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CompanyName")
                         .HasColumnType("TEXT");
@@ -68,15 +67,14 @@ namespace FlightControlWeb.Migrations
 
             modelBuilder.Entity("FlightControlWeb.Models.InitialLocation", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("FlightId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("FlightId")
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("REAL");
@@ -91,15 +89,11 @@ namespace FlightControlWeb.Migrations
 
             modelBuilder.Entity("FlightControlWeb.Models.Segment", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
-                    b.Property<long>("FlightId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long?>("FlightPlanId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("FlightId")
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("REAL");
@@ -115,8 +109,6 @@ namespace FlightControlWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlightPlanId");
-
                     b.ToTable("Segments");
                 });
 
@@ -131,13 +123,6 @@ namespace FlightControlWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Servers");
-                });
-
-            modelBuilder.Entity("FlightControlWeb.Models.Segment", b =>
-                {
-                    b.HasOne("FlightControlWeb.Models.FlightPlan", null)
-                        .WithMany("Segments")
-                        .HasForeignKey("FlightPlanId");
                 });
 #pragma warning restore 612, 618
         }

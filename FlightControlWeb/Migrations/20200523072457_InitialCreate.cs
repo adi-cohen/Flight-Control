@@ -23,8 +23,7 @@ namespace FlightControlWeb.Migrations
                 name: "FlightPlan",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(nullable: false),
                     Passengers = table.Column<int>(nullable: false),
                     CompanyName = table.Column<string>(nullable: true)
                 },
@@ -49,9 +48,8 @@ namespace FlightControlWeb.Migrations
                 name: "InitialLocation",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FlightId = table.Column<long>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
+                    FlightId = table.Column<string>(nullable: true),
                     Longitude = table.Column<double>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
                     DateTime = table.Column<DateTime>(nullable: false)
@@ -59,6 +57,22 @@ namespace FlightControlWeb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InitialLocation", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Segments",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    FlightId = table.Column<string>(nullable: true),
+                    SegmentNumber = table.Column<long>(nullable: false),
+                    Longitude = table.Column<double>(nullable: false),
+                    Latitude = table.Column<double>(nullable: false),
+                    TimeInSeconds = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Segments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,45 +87,19 @@ namespace FlightControlWeb.Migrations
                     table.PrimaryKey("PK_Servers", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Segments",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FlightId = table.Column<long>(nullable: false),
-                    SegmentNumber = table.Column<long>(nullable: false),
-                    Longitude = table.Column<double>(nullable: false),
-                    Latitude = table.Column<double>(nullable: false),
-                    TimeInSeconds = table.Column<int>(nullable: false),
-                    FlightPlanId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Segments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Segments_FlightPlan_FlightPlanId",
-                        column: x => x.FlightPlanId,
-                        principalTable: "FlightPlan",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.InsertData(
                 table: "ExternalFlights",
                 columns: new[] { "FlightId", "ExternalServerUrl" },
-                values: new object[] { "YEMO05", "http://ronyut2.atwebpages.com/ap2" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Segments_FlightPlanId",
-                table: "Segments",
-                column: "FlightPlanId");
+                values: new object[] { "WUWA41", "http://ronyut2.atwebpages.com/ap2" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "ExternalFlights");
+
+            migrationBuilder.DropTable(
+                name: "FlightPlan");
 
             migrationBuilder.DropTable(
                 name: "IdNumbers");
@@ -124,9 +112,6 @@ namespace FlightControlWeb.Migrations
 
             migrationBuilder.DropTable(
                 name: "Servers");
-
-            migrationBuilder.DropTable(
-                name: "FlightPlan");
         }
     }
 }

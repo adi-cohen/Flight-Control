@@ -39,34 +39,38 @@ namespace FlightControlWeb.Controllers
             if (ToSyncAll)
             {
                 List<Flight> externalFlights = new List<Flight>();
-
                 // Build the request string to send.
                 string request = "/api/Flights?relative_to=";
                 request += relative_to;
-
                 // Pass the HTTP request to all registered external servers.
                 foreach (Server serv in db.Servers)
                 {
-                    /*string serverUrl = serv.Url;
-                     request = serverUrl + request;
-                     // Send the request and get Flight object.
-                     Flight response = await ServerManager.makeRequest(request);
-                     externalFlights.Add(response);
-                     // Add to flightId -> URL mapping.
-                     ExternalFlight newExtFlight = new ExternalFlight();
-                     newExtFlight.FlightId = response.FlightId;
-                     newExtFlight.ExternalServerUrl = serv.Url;
-                     db.ExternalFlights.Add(newExtFlight);*/
-
-                    // dont forget add the flights to flightList
+                    List<Flight> flightsFromCurrServ = new List<Flight>();
+                    string serverUrl = serv.Url;
+                    request = serverUrl + request;
+                    // Send the request and get Flight object.
+                    var response = await ServerManager.makeRequest(request);
+                    // Desirialize the list of JSON object we got into list of Flights.
+                    flightsFromCurrServ.AddRange(JsonConvert.DeserializeObject<List<Flight>>(response));
+                    // Add to flightId -> URL mapping db.
+                    foreach (Flight f in flightsFromCurrServ)
+                    {
+                        ExternalFlight newExtFlight = new ExternalFlight();
+                        newExtFlight.FlightId = f.FlightId;
+                        newExtFlight.ExternalServerUrl = serv.Url;
+                        db.ExternalFlights.Add(newExtFlight);
+                        db.SaveChanges();
+                    }
+                    externalFlights.AddRange(flightsFromCurrServ);
                 }
+                // Add the external flights to general flightList.
+                flightList.AddRange(externalFlights);
             }
             List<Flight> internalFlights = manager.getAllFlights(UtcTime);
             flightList.AddRange(internalFlights);
 
             string output = JsonConvert.SerializeObject(flightList);
             return output;
-
         }
 
         // DELETE: api/Flights/5
