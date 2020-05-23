@@ -30,6 +30,7 @@ namespace FlightControlWeb.Models
 
             // Add to DB.
             _db.IdNumbers.Add(generated_id);
+            _db.SaveChanges();
             return generated_id.Id.ToString();
         }
     }
