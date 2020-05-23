@@ -38,7 +38,7 @@ namespace FlightControlWeb.Controllers
             FlightPlan flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
             {
-                // If not found, search for the id in external flights.
+                // If not found, search for the id in external flights db.
                 ExternalFlight extFlightPlan = await db.ExternalFlights.FindAsync(id);
                 if (extFlightPlan == null)
                 {
