@@ -51,15 +51,22 @@ namespace FlightControlWeb.Controllers
                     // Send the request and get Flight object.
                     var response = await ServerManager.makeRequest(request);
                     // Desirialize the list of JSON object we got into list of Flights.
-                    flightsFromCurrServ.AddRange(JsonConvert.DeserializeObject<List<Flight>>(response));
+                    List<Flight> flights = JsonConvert.DeserializeObject<List<Flight>>(response);
+                    flightsFromCurrServ.AddRange(flights);
                     // Add to flightId -> URL mapping db.
                     foreach (Flight f in flightsFromCurrServ)
                     {
-                        ExternalFlight newExtFlight = new ExternalFlight();
-                        newExtFlight.FlightId = f.FlightId;
-                        newExtFlight.ExternalServerUrl = serv.Url;
-                        db.ExternalFlights.Add(newExtFlight);
-                        db.SaveChanges();
+                        f.IsExternal = true;
+                        //if (db.ExternalFlights.Where(e => e.FlightId == f.FlightId).First() == null ){ 
+                        ExternalFlight ff = db.ExternalFlights.Find(f.FlightId);
+                        if (ff == null)
+                        { 
+                            ExternalFlight newExtFlight = new ExternalFlight();
+                            newExtFlight.FlightId = f.FlightId;
+                            newExtFlight.ExternalServerUrl = serv.Url;
+                            db.ExternalFlights.Add(newExtFlight);
+                            db.SaveChanges();
+                        }
                     }
                     externalFlights.AddRange(flightsFromCurrServ);
                 }
