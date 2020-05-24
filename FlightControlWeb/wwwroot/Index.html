@@ -1,9 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>CSS Website Layout</title>
+    <title>Flight-Control</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
@@ -27,6 +30,7 @@
             background-color: #f1f1f1;
             padding: 20px;
             text-align: center;
+            font-family: "Comic Sans MS", cursive, sans-serif;
         }
 
         /* Create three unequal columns that floats next to each other */
@@ -99,11 +103,12 @@
             <icon type="delete" style={{ fontSize: "20px", color: "#CC160B" }} theme="outlined" onclick="testRemove(event)"></icon>
         </option>
     </select>-->
-            <table id="table" style="cursor: pointer;min-width:90%; margin-bottom:10px" border="1" align="center">
-                <tbody id="myFlightList" style="margin-left:10px;font-size:medium; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
-
+        <div class="table-responsive">
+            <table class="table table-hover" id="table" style="cursor: pointer;min-width:90%; margin-bottom:10px" border="1" align="center">
+                <tbody id="myFlightList" style="margin-left:10px;font-size:small; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
                 </tbody>
             </table>
+        </div>
             <img src="pictures/drop-files-here.jpg" id="draganddropimage" hidden="hidden" ondragleave="dragLeave(event)" ondrop="drop(event)" />
         </div>
         
@@ -113,11 +118,12 @@
 
         <div class="column side">
             <h2>Ext. Flights</h2>
-            <table id="extTable" name="extFlightsList"style="cursor: pointer;min-width:90%;margin-bottom:10px" border="1" align="center">
-                <tbody id="extFlightList" style="margin-left:10px; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
-
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-hover" id="extTable" name="extFlightsList" style="cursor: pointer;min-width:90%;margin-bottom:10px" border="1" align="center">
+                    <tbody id="extFlightList" style="margin-left:10px;font-size:small; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

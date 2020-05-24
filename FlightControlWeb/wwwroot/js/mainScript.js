@@ -1,4 +1,33 @@
 ﻿let mymap = L.map('mapId').setView([51.505, -0.09], 1);
+let polyline;
+let deletedIsSelected;
+let className;
+mymap.on('click', function () {
+    if (polyline) {
+        polyline.remove(mymap);
+        $('.flightDetails').html('');
+        if (selectedId) {
+            document.getElementById(selectedId).style.background = "";
+            selectedId = 0;
+        }
+        
+    }
+});
+let layerGroup;
+let blackIcon = L.icon({
+    iconUrl: 'pictures/blackAirplane.png',
+    iconSize: [38, 40], // size of the icon
+    iconAnchor: [26, 26], // point of the icon which will correspond to marker's location
+    popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+let greenIcon = L.icon({
+    iconUrl: 'pictures/greenAirplane.png',
+    iconSize: [38, 40], // size of the icon
+    iconAnchor: [26, 26], // point of the icon which will correspond to marker's location
+    popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+let selectedIcon;
+let selectedId;
 createMap();
 node.textContent = "Some error message" // To draw attention 
 node.style.color = "red";
@@ -18,6 +47,10 @@ let func = function dataUpdate() {
         dataType: 'JSON',
         success: function (response) {
             clearLists();
+            if (layerGroup) {
+                layerGroup.clearLayers();
+            }
+            
             let len = response.length;
             for (let i = 0; i < len; i++) {
                 if (response[i].is_external == 1) {
@@ -31,13 +64,17 @@ let func = function dataUpdate() {
                 addToMap(response[i]);
 
             }
+        },
+        error: function (error) {
+            tempAlert("Can not sync flight from the servers.", 5000);
         }
     });
     
 }
 
 function createMap() {
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoib21lcm1vayIsImEiOiJja2FnaXlvbmMwNDFpMnhtb2ptdnJ3NnZhIn0._fxKcKn0NhvxL8chgMNzYQ', {
+    layerGroup = L.layerGroup().addTo(mymap);
+    leyer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoib21lcm1vayIsImEiOiJja2FnaXlvbmMwNDFpMnhtb2ptdnJ3NnZhIn0._fxKcKn0NhvxL8chgMNzYQ', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
         minZoom: 1,
@@ -51,34 +88,40 @@ function createMap() {
 
 
 function addToMap(flight) {
-    let blackIcon = L.icon({
-        iconUrl: 'pictures/greenAirplane.png',
-        iconSize: [38, 40], // size of the icon
-        iconAnchor: [26, 26], // point of the icon which will correspond to marker's location
-        popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
-    //blackIcon.className = flight.id;
-    //let marker1 = L.marker([flight.longitude, flight.latitude], { icon: blackIcon }).addTo(mymap);
-    let marker1 = L.marker([flight.longitude, flight.latitude]).addTo(mymap);
+    let marker1;
+    if (flight.flight_id == selectedId) {
+        marker1 = L.marker([flight.longitude, flight.latitude], { icon: greenIcon }).addTo(layerGroup);
+    } else {
+        marker1 = L.marker([flight.longitude, flight.latitude], { icon: blackIcon }).addTo(layerGroup);
+    }
+    //let marker1 = L.marker([flight.longitude, flight.latitude]).addTo(mymap);
 
     marker1.className = flight.flight_id;
+    marker1.id = "marker" + flight.flight_id;
     marker1.on('click', flightSelected);
-
 
 
 
 }
 
 function flightSelected(event) {
+    
     let url = "/api/FlightPlan/".concat(this.className);
+    if (selectedId) {
+       document.getElementById(selectedId).style.background = "";
+    }
+   
+    selectedId = this.className;
     $.ajax({
         url: url,
         type: 'GET',
         dataType: 'JSON',
         success: function (response) {
+            document.getElementById(selectedId).style.background = "#66d9ff";
             showFlightDetails(response);
         },
         error: function (error) {
+            tempAlert("Can not get flight details from server. Please try again later.", 5000);
             console.log(error);
         }
     });
@@ -86,9 +129,18 @@ function flightSelected(event) {
 function showFlightDetails(details) {
 
     drawPath(details.segments, details.initial_location);
-    //changeIcon();
+    //changeIcon(details);
     writeDetails(details);
 }
+
+/*function changeIcon() {
+    if (selectedIcon) {
+        selectedIcon.remove();
+        //todo: change back to black icon.
+    }
+    selectedIcon = 
+
+}*/
 
 function writeDetails(details) {
     let startPoint = document.getElementById("startPointID");
@@ -125,6 +177,9 @@ function getFinishTime(startTime, seconds) {
 }
 
 function drawPath(segments, initial_location) {
+    if (polyline) {
+        polyline.remove(mymap);
+    }
 
     let lon = initial_location.longitude;
     let lat = initial_location.latitude;
@@ -133,7 +188,8 @@ function drawPath(segments, initial_location) {
     for (let i = 0; i < len; i++) {
         path.push([segments[i].longitude, segments[i].latitude]);
     }
-    let polyline = L.polyline(path, { color: 'red' }).addTo(mymap);
+    polyline = L.polyline(path, { color: 'red' });
+    polyline.addTo(mymap);
     mymap.fitBounds(polyline.getBounds());
 
 }
@@ -183,7 +239,7 @@ function addToMyFlight(flight) {
     icon.innerText = "delete";
 
     //column 1
-    myFlightElCl1.id = flight.flight_id;
+    myFlightsElRow.id = flight.flight_id;
     myFlightElCl1.className = flight.flight_id;
     let x = flight.company_name + " " + flight.flight_id.toString(); //unique name of flight
     let text = document.createTextNode(x);
@@ -191,8 +247,13 @@ function addToMyFlight(flight) {
     myFlightElCl1.onclick = flightSelected; //event handler
 
     //column 2
+    myFlightElCl2.className = flight.flight_id
     myFlightElCl2.appendChild(icon);
-    myFlightElCl2.onclick = testRemove; // event handler
+    myFlightElCl2.onclick = removeFlight; // event handler
+
+    if (flight.flight_id == selectedId) {
+        myFlightsElRow.style.background = "#66d9ff";
+    }
 
     //children addition
     myFlightsElRow.appendChild(myFlightElCl1);
@@ -204,21 +265,25 @@ function addToMyFlight(flight) {
 }
 
 function addToExtFlight(flight) {
-    let myFlights = document.getElementById("extFlightList"); //body
-    let myFlightsElRow = document.createElement("tr"); //row
-    let myFlightElCl1 = document.createElement("td"); //name of flight
+    let extFlights = document.getElementById("extFlightList"); //body
+    let extFlightsElRow = document.createElement("tr"); //row
+    let extFlightElCl1 = document.createElement("td"); //name of flight
 
     //column 1
-    myFlightElCl1.id = flight.flight_id;
-    myFlightElCl1.className = flight.flight_id;
+    extFlightsElRow.id = flight.flight_id;
+    extFlightElCl1.className = flight.flight_id;
     let x = flight.company_name + " " + flight.flight_id.toString(); //unique name of flight
     let text = document.createTextNode(x);
-    myFlightElCl1.appendChild(text);
-    myFlightElCl1.onclick = flightSelected; //event handler
+    extFlightElCl1.appendChild(text);
+    extFlightElCl1.onclick = flightSelected; //event handler
+
+    if (flight.flight_id == selectedId) {
+        extFlightsElRow.style.background = "#66d9ff";
+    }
 
     //children addition
-    myFlightsElRow.appendChild(myFlightElCl1);
-    myFlights.appendChild(myFlightsElRow);
+    extFlightsElRow.appendChild(extFlightElCl1);
+    extFlights.appendChild(extFlightsElRow);
 
 
 
@@ -247,4 +312,42 @@ function testGetDetails(event) {
 function testRemove(event) {
     console.log("you asked for Deletion!");
 }
+
+function removeFlight(event) {
+    
+    //mymap.removeLayer(document.getElementById("marker" + this.className));
+    
+    let url = "/api/Flights/".concat(this.className);
+    deletedIsSelected = (this.className == selectedId);
+    className = this.className;
+    //selectedId = this.className;
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        //dataType: 'JSON',
+        success: function (response) { 
+            $('.' + className).hide();
+            if (deletedIsSelected) {
+                document.getElementById(selectedId).style.background = "";
+                selectedId = 0;
+                $('.flightDetails').html('');
+                polyline.remove(mymap);
+            }
+        },
+        error: function (error) {
+            tempAlert("Can not delete flight from server. Please try again later.", 5000);
+        }
+    });
+}
+
+function tempAlert(msg, duration) {
+    let alertBox = document.createElement("div");
+    alertBox.setAttribute("style", "position:absolute;top:18%;left:20%;background-color:red;font-size:large;border-radius: 5px;");
+    alertBox.innerHTML = "### Error: " + msg + " ###";
+    setTimeout(function () {
+        alertBox.parentNode.removeChild(alertBox);
+    }, duration);
+    document.body.appendChild(alertBox);
+}
+
 setInterval(func, 3000);
