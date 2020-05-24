@@ -33,7 +33,7 @@ createMap();
 let func = function dataUpdate() {
     //let getOptions = prepareGetAll();
     let date = getDate();
-    //console.log(date);
+    console.log(date);
     let url = "/api/Flights?relative_to=".concat(date).concat("&sync_all");
     //let url = "http://ronyut.atwebpages.com/ap2/api/Flights?relative_to=".concat(date);
 
@@ -196,9 +196,10 @@ function getDate() {
     let date = new Date();
 
     let year = date.getUTCFullYear().toString();
-    let month = ('0' + date.getUTCMonth().toString()).substr(-2);
-    let day = ('0' + date.getUTCDay().toString()).substr(-2);
-
+    let month = ('0' + (date.getUTCMonth()+1).toString()).substr(-2);
+    let day = ('0' + date.getUTCDate().toString()).substr(-2);
+    console.log("the date.getUTCDay() is: " + date.getUTCDay());
+    console.log(" the date.getUTCDay().toString().substr(-2): " + date.getUTCDay().toString().substr(-2));
     let hour = ('0' + date.getUTCHours().toString()).substr(-2);
     let minute = ('0' + date.getUTCMinutes().toString()).substr(-2);
     let second = ('0' + date.getUTCSeconds().toString()).substr(-2);
