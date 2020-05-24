@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Microsoft.VisualBasic.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Threading;
 
 namespace FlightControlWeb.Controllers
 {
@@ -51,16 +52,14 @@ namespace FlightControlWeb.Controllers
                     // Send the request and get Flight object.
                     var response = await ServerManager.makeRequest(request);
                     // Desirialize the list of JSON object we got into list of Flights.
-                    List<Flight> flights = JsonConvert.DeserializeObject<List<Flight>>(response);
-                    flightsFromCurrServ.AddRange(flights);
+                    flightsFromCurrServ.AddRange(JsonConvert.DeserializeObject<List<Flight>>(response));
                     // Add to flightId -> URL mapping db.
                     foreach (Flight f in flightsFromCurrServ)
                     {
                         f.IsExternal = true;
-                        //if (db.ExternalFlights.Where(e => e.FlightId == f.FlightId).First() == null ){ 
-                        ExternalFlight ff = db.ExternalFlights.Find(f.FlightId);
-                        if (ff == null)
-                        { 
+                        ExternalFlight temp = db.ExternalFlights.Find(f.FlightId);
+                        if (temp == null)
+                        {
                             ExternalFlight newExtFlight = new ExternalFlight();
                             newExtFlight.FlightId = f.FlightId;
                             newExtFlight.ExternalServerUrl = serv.Url;
@@ -82,7 +81,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<HttpStatusCode>> DeleteFlight(string id)
+        public ActionResult<HttpStatusCode> DeleteFlight(string id)
         {
             string deletedId =  manager.RemoveFlight(id);
             if (deletedId == null)
