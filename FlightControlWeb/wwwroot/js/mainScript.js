@@ -51,16 +51,17 @@ let func = function dataUpdate() {
             
             let len = response.length;
             for (let i = 0; i < len; i++) {
+                if (response[i].is_external == 0) {
+                    addToMyFlight(response[i]);
+                    addToMap(response[i]);
+                }
+            }
+            for (i = 0; i < len; i++) {
+
                 if (response[i].is_external == 1) {
                     addToExtFlight(response[i]);
-                    //testFunc();
-                } else {
-                    addToMyFlight(response[i]);
-                    //console.log(response[i]);
+                    addToMap(response[i]);
                 }
-
-                addToMap(response[i]);
-
             }
         },
         error: function (error) {
@@ -226,7 +227,7 @@ function prepareGetAll() {
 //}
 
 function addToMyFlight(flight) {
-    let myFlights = document.getElementById("myFlightList"); //body
+    let myFlights = document.getElementById("flightList"); //body
     let myFlightsElRow = document.createElement("tr"); //row
     let myFlightElCl1 = document.createElement("td"); //name of flight
     let myFlightElCl2 = document.createElement("td"); //icon
@@ -264,7 +265,7 @@ function addToMyFlight(flight) {
 }
 
 function addToExtFlight(flight) {
-    let extFlights = document.getElementById("extFlightList"); //body
+    let extFlights = document.getElementById("flightList"); //body
     let extFlightsElRow = document.createElement("tr"); //row
     let extFlightElCl1 = document.createElement("td"); //name of flight
 
@@ -300,8 +301,8 @@ function addToExtFlight(flight) {
 }
 
 function clearLists() {
-    $("#myFlightList").empty();
-    $("#extFlightList").empty();
+    $("#flightList").empty();
+   // $("#extFlightList").empty();
 }
 
 function testGetDetails(event) {
