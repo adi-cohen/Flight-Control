@@ -1,5 +1,7 @@
 ﻿let mymap = L.map('mapId').setView([51.505, -0.09], 1);
 createMap();
+node.textContent = "Some error message" // To draw attention 
+node.style.color = "red";
 
 let func = function dataUpdate() {
     //let getOptions = prepareGetAll();
