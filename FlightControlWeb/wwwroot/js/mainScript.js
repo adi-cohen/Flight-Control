@@ -29,13 +29,11 @@ let greenIcon = L.icon({
 let selectedIcon;
 let selectedId;
 createMap();
-node.textContent = "Some error message" // To draw attention 
-node.style.color = "red";
 
 let func = function dataUpdate() {
     //let getOptions = prepareGetAll();
     let date = getDate();
-    //console.log(date);
+    console.log(date);
     let url = "/api/Flights?relative_to=".concat(date).concat("&sync_all");
     //let url = "http://ronyut.atwebpages.com/ap2/api/Flights?relative_to=".concat(date);
 
@@ -53,16 +51,17 @@ let func = function dataUpdate() {
             
             let len = response.length;
             for (let i = 0; i < len; i++) {
+                if (response[i].is_external == 0) {
+                    addToMyFlight(response[i]);
+                    addToMap(response[i]);
+                }
+            }
+            for (i = 0; i < len; i++) {
+
                 if (response[i].is_external == 1) {
                     addToExtFlight(response[i]);
-                    //testFunc();
-                } else {
-                    addToMyFlight(response[i]);
-                    //console.log(response[i]);
+                    addToMap(response[i]);
                 }
-
-                addToMap(response[i]);
-
             }
         },
         error: function (error) {
@@ -196,10 +195,12 @@ function drawPath(segments, initial_location) {
 
 function getDate() {
     let date = new Date();
-    
+
     let year = date.getUTCFullYear().toString();
-    let month = ('0' + date.getUTCMonth().toString()).substr(-2);
-    let day = ('0' + date.getUTCDay().toString()).substr(-2);
+    let month = ('0' + (date.getUTCMonth()+1).toString()).substr(-2);
+    let day = ('0' + date.getUTCDate().toString()).substr(-2);
+    console.log("the date.getUTCDay() is: " + date.getUTCDay());
+    console.log(" the date.getUTCDay().toString().substr(-2): " + date.getUTCDay().toString().substr(-2));
     let hour = ('0' + date.getUTCHours().toString()).substr(-2);
     let minute = ('0' + date.getUTCMinutes().toString()).substr(-2);
     let second = ('0' + date.getUTCSeconds().toString()).substr(-2);
@@ -226,7 +227,7 @@ function prepareGetAll() {
 //}
 
 function addToMyFlight(flight) {
-    let myFlights = document.getElementById("myFlightList"); //body
+    let myFlights = document.getElementById("flightList"); //body
     let myFlightsElRow = document.createElement("tr"); //row
     let myFlightElCl1 = document.createElement("td"); //name of flight
     let myFlightElCl2 = document.createElement("td"); //icon
@@ -264,7 +265,7 @@ function addToMyFlight(flight) {
 }
 
 function addToExtFlight(flight) {
-    let extFlights = document.getElementById("extFlightList"); //body
+    let extFlights = document.getElementById("flightList"); //body
     let extFlightsElRow = document.createElement("tr"); //row
     let extFlightElCl1 = document.createElement("td"); //name of flight
 
@@ -300,8 +301,8 @@ function addToExtFlight(flight) {
 }
 
 function clearLists() {
-    $("#myFlightList").empty();
-    $("#extFlightList").empty();
+    $("#flightList").empty();
+   // $("#extFlightList").empty();
 }
 
 function testGetDetails(event) {

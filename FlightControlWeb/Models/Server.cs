@@ -1,8 +1,14 @@
-﻿namespace FlightControlWeb.Models
+﻿using System.Text.Json.Serialization;
+
+
+namespace FlightControlWeb.Models
 {
     public class Server
     {
-        public long Id { get; set; }
+        [JsonPropertyName("ServerId")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("ServerURL")]
         public string Url { get; set; }
     }
 }

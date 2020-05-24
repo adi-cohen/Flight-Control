@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace FlightControlWeb.Controllers
 {
@@ -23,15 +24,19 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<IEnumerable<Server>>> GetServers()
         {
             return await db.Servers.ToListAsync();
-
         }
 
         // POST: api/Server
         [HttpPost]
-        public async void PostServer([FromBody] Server serv)
+        public async Task<ActionResult<HttpStatusCode>> PostServer([FromBody] Server serv)
         {
-            db.Servers.Add(serv);
-            await db.SaveChangesAsync();
+            IdGenerator generator = new IdGenerator(db);
+            if (generator.isUnique(new IdNumber(serv.Id))) {
+                db.Servers.Add(serv);
+                await db.SaveChangesAsync();
+                return HttpStatusCode.Created;
+            }
+            return HttpStatusCode.BadRequest;
         }
 
         // DELETE: api/ApiWithActions/5
