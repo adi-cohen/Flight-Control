@@ -13,7 +13,7 @@ namespace FlightControlWeb.Models
     {
         [IgnoreDataMember]
         [JsonProperty(PropertyName = "flight_id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         [JsonPropertyName("passengers")]
         [JsonProperty(PropertyName = "passengers")]
@@ -28,6 +28,7 @@ namespace FlightControlWeb.Models
         [JsonProperty(PropertyName = "initial_location")]
         public InitialLocation InitialLocation { get; set; }
 
+        [NotMapped]
         [JsonPropertyName("segments")]
         [JsonProperty(PropertyName = "segments")]
         public List<Segment> Segments { get; set; }

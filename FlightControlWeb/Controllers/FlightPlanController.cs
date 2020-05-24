@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Models;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace FlightControlWeb.Controllers
 {
@@ -16,34 +17,52 @@ namespace FlightControlWeb.Controllers
     {
         private readonly DBInteractor db;
         private readonly IFlightPlanManager manager;
+        private readonly ServerManager servManager;
+        private readonly IdGenerator generator;
         public FlightPlanController(DBInteractor newDb)
         {
             db = newDb;
             manager = new FlightPlanManager(db);
+            servManager = new ServerManager(db);
+            generator = new IdGenerator(db);
+
         }
 
         // GET: api/FlightPlan/5
         //return flight plan by id
         [HttpGet("{id}")]
-        public async Task<ActionResult<string>> GetFlightPlan(long id)
+        public async Task<ActionResult<string>> GetFlightPlan(string id)
         {
+            //FlightPlan flightPlan = null;
+            // Search in local flight plans.
             FlightPlan flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
             {
-                //fing the flight in external servers
+                // If not found, search for the id in external flights db.
+                ExternalFlight extFlightPlan = await db.ExternalFlights.FindAsync(id);
+                if (extFlightPlan == null)
+                {
+                    return NotFound();
+                }
+                // Build request string.
+                string request = "/api/FlightPlan/" + id;
+                string serverUrl = extFlightPlan.ExternalServerUrl;
+                request = serverUrl + request;
+                // Send the request and get FlightPlan object.
+                var response = await ServerManager.makeRequest(request);
+                flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);
             }
-            //if the flight is not external and internal 
-            if (flightPlan == null)
+            else
             {
-                return NotFound();
+                //get all the details about the internal flight
+                List<Segment> flightSegments = db.Segments.Where(s => s.FlightId == flightPlan.Id).OrderBy(s => s.SegmentNumber).ToList();
+                InitialLocation flightinitLocation = db.InitLocations.Where(i => i.FlightId == flightPlan.Id).First();
+                DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
+                UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
+                flightinitLocation.DateTime = UtcTime;
+                flightPlan.Segments = flightSegments;
+                flightPlan.InitialLocation = flightinitLocation;
             }
-            List<Segment> flightSegments = db.Segments.Where(s => s.FlightId == flightPlan.Id).ToList();
-            InitialLocation flightinitLocation = db.InitLocations.Where(i => i.FlightId == flightPlan.Id).First();
-            DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
-            UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
-            flightinitLocation.DateTime = UtcTime;
-            flightPlan.Segments = flightSegments;
-            flightPlan.InitialLocation = flightinitLocation;
             string output = JsonConvert.SerializeObject(flightPlan);
             return output;
         }

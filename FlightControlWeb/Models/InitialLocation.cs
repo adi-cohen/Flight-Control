@@ -12,11 +12,11 @@ namespace FlightControlWeb.Models
     public class InitialLocation
     {
         [IgnoreDataMember]
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey("FlightPlan")]
         [IgnoreDataMember]
-        public long FlightId { get; set; }
+        public string FlightId { get; set; }
 
         [JsonPropertyName("longitude")]
         [JsonProperty(PropertyName = "longitude")]

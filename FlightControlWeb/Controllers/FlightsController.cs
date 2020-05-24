@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Models;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.VisualBasic.CompilerServices;
 using System.Text.RegularExpressions;
@@ -19,6 +15,7 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
+        private readonly ServerManager _servManager;
         private readonly DBInteractor db;
         private FlightManager manager;
 
@@ -26,6 +23,7 @@ namespace FlightControlWeb.Controllers
         {
             db = context;
             manager = new FlightManager(new FlightPlanManager(context), context);
+            _servManager = new ServerManager(context);
         }
 
         
@@ -40,22 +38,46 @@ namespace FlightControlWeb.Controllers
             List<Flight> flightList = new List<Flight>();
             if (ToSyncAll)
             {
-                //ask other servers
-                
+                List<Flight> externalFlights = new List<Flight>();
+                // Build the request string to send.
+                string request = "/api/Flights?relative_to=";
+                request += relative_to;
+                // Pass the HTTP request to all registered external servers.
+                foreach (Server serv in db.Servers)
+                {
+                    List<Flight> flightsFromCurrServ = new List<Flight>();
+                    string serverUrl = serv.Url;
+                    request = serverUrl + request;
+                    // Send the request and get Flight object.
+                    var response = await ServerManager.makeRequest(request);
+                    // Desirialize the list of JSON object we got into list of Flights.
+                    flightsFromCurrServ.AddRange(JsonConvert.DeserializeObject<List<Flight>>(response));
+                    // Add to flightId -> URL mapping db.
+                    foreach (Flight f in flightsFromCurrServ)
+                    {
+                        ExternalFlight newExtFlight = new ExternalFlight();
+                        newExtFlight.FlightId = f.FlightId;
+                        newExtFlight.ExternalServerUrl = serv.Url;
+                        db.ExternalFlights.Add(newExtFlight);
+                        db.SaveChanges();
+                    }
+                    externalFlights.AddRange(flightsFromCurrServ);
+                }
+                // Add the external flights to general flightList.
+                flightList.AddRange(externalFlights);
             }
-            List<Flight> internalFlights =  manager.getAllFlights(UtcTime);
+            List<Flight> internalFlights = manager.getAllFlights(UtcTime);
             flightList.AddRange(internalFlights);
 
             string output = JsonConvert.SerializeObject(flightList);
             return output;
-
         }
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<HttpStatusCode>> DeleteFlight(int id)
+        public async Task<ActionResult<HttpStatusCode>> DeleteFlight(string id)
         {
-            long? deletedId =  manager.RemoveFlight(id);
+            string deletedId =  manager.RemoveFlight(id);
             if (deletedId == null)
             {
                 return NotFound();

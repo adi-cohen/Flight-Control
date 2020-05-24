@@ -83,6 +83,7 @@ namespace FlightControlWeb.Models
                         newFlight.Longitude = newLongitude;
                         newFlight.Date = lastStrartTime.AddSeconds(theDiffFromStartTimeInSeconds);
                         flightList.Add(newFlight);
+                        break;
                     }
                 }
             }
@@ -90,7 +91,7 @@ namespace FlightControlWeb.Models
             return flightList;
         }
 
-        public long? RemoveFlight (int id)
+        public string RemoveFlight (string id)
         {
             FlightPlan flightPlan =  db.FlightPlans.Find(id);
 
