@@ -1,44 +1,145 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>To-do CRUD</title>
-    <link rel="stylesheet" href="css/site.css" />
+    <title>Flight-Control</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        /* Style the header */
+        .header {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+        }
+
+        /* Create three unequal columns that floats next to each other */
+        .column {
+            float: left;
+            text-align: center;
+            border: 2px solid;
+            border-radius: 5px;
+            margin-left: 2px;
+            margin-bottom: 2px;
+        }
+
+            /* Left and right column */
+            .column.side {
+                width: 20%;
+            }
+
+            /* Middle column */
+            .column.middle {
+                width: 59%;
+            }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 800px) {
+            .column.side, .column.middle {
+                width: 100%;
+            }
+        }
+
+        /* Style the bottomRow */
+        .bottomRow {
+            background-color: #f1f1f1;
+            text-align: center;
+            border: 2px solid;
+            border-radius: 5px;
+            margin-right: 2px;
+            margin-left: 2px;
+        }
+
+        #draganddropimage {
+            max-width: 90%;
+            height: 180px;
+            visibility: hidden;
+        }
+
+        #mapId {
+            height: 300px;
+        }
+    </style>
 </head>
 <body>
-    <h1>To-do CRUD</h1>
-    <h3>Add</h3>
-    <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
-        <input type="text" id="add-name" placeholder="New to-do">
-        <input type="submit" value="Add">
-    </form>
 
-    <div id="editForm">
-        <h3>Edit</h3>
-        <form action="javascript:void(0);" onsubmit="updateItem()">
-            <input type="hidden" id="edit-id">
-            <input type="checkbox" id="edit-isComplete">
-            <input type="text" id="edit-name">
-            <input type="submit" value="Save">
-            <a onclick="closeInput()" aria-label="Close">&#10006;</a>
-        </form>
+    <div class="header">
+        <h1>Flight Control</h1>
+        <p>made by COMBO Projects</p>
     </div>
 
-    <p id="counter"></p>
+    <div class="row">
+        <div class="column side" ondragover="allowDrop(event)">
+            <h2>My Flights</h2>
+            <!--<select id="myFlightList" name="myFlightsList" size="5" style="width: 90%; text-align: center">
+        <option onclick="testGetDetails(event)">
+            flight id
+            <icon type="delete" style={{ fontSize: "20px", color: "#CC160B" }} theme="outlined" onclick="testRemove(event)"></icon>
+        </option>
+    </select>-->
+        <div class="table-responsive">
+            <table class="table table-hover" id="table" style="cursor: pointer;min-width:90%; margin-bottom:10px" border="1" align="center">
+                <tbody id="myFlightList" style="margin-left:10px;font-size:small; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
+                </tbody>
+            </table>
+        </div>
+            <img src="pictures/drop-files-here.jpg" id="draganddropimage" hidden="hidden" ondragleave="dragLeave(event)" ondrop="drop(event)" />
+        </div>
+        
+        <div class="column middle" id="mapId">
+            <h2>Map</h2>
+        </div>
 
-    <table>
-        <tr>
-            <th>Is Complete?</th>
-            <th>Name</th>
-            <th></th>
-            <th></th>
-        </tr>
-        <tbody id="todos"></tbody>
-    </table>
+        <div class="column side">
+            <h2>Ext. Flights</h2>
+            <div class="table-responsive">
+                <table class="table table-hover" id="extTable" name="extFlightsList" style="cursor: pointer;min-width:90%;margin-bottom:10px" border="1" align="center">
+                    <tbody id="extFlightList" style="margin-left:10px;font-size:small; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <script src="js/site.js" asp-append-version="true"></script>
-    <script type="text/javascript">
-        getItems();
-    </script>
+    <div class="bottomRow" id="divDetails">
+        <h2>Flight Details:</h2>
+        <p class="flightDetails" id="startPointID"></p>
+        <p class="flightDetails" id="endPointID"></p>
+        <p class="flightDetails" id="departureTimeID"></p>
+        <p class="flightDetails" id="arrivalTimeID"></p>
+        <p class="flightDetails" id="companyNameID"></p>
+        <p class="flightDetails" id="passengersCountID"></p>
+
+    </div>
+
+    <script src="js/fileDropScripts.js"></script>
+    <script src="js/mainScript.js"></script>
 </body>
 </html>
