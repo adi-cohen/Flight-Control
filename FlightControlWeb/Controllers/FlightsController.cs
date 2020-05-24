@@ -27,7 +27,7 @@ namespace FlightControlWeb.Controllers
             _servManager = new ServerManager(context);
         }
 
-
+        
 
         // GET: api/Flights/
         [HttpGet("")]
@@ -71,12 +71,11 @@ namespace FlightControlWeb.Controllers
                             }
                         }
                         externalFlights.AddRange(flightsFromCurrServ);
-                    }
-                    catch (JsonException je)
+                    } catch (JsonException je)
                     {
                         //return je.Message;
                     }
-
+                    
                 }
                 // Add the external flights to general flightList.
                 flightList.AddRange(externalFlights);
@@ -92,12 +91,12 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public ActionResult<HttpStatusCode> DeleteFlight(string id)
         {
-            string deletedId = manager.RemoveFlight(id);
+            string deletedId =  manager.RemoveFlight(id);
             if (deletedId == null)
             {
                 return NotFound();
             }
-            return HttpStatusCode.NoContent;
+            return HttpStatusCode.NoContent; 
         }
 
     }
