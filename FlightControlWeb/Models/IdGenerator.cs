@@ -18,20 +18,28 @@ namespace FlightControlWeb.Models
         public string GanerateID()
         {
             Random rand = new Random();
-            IdNumber generated_id, ret;
+            IdNumber generated_id;
 
             do
             {
-                generated_id = new IdNumber((long)rand.Next(10000, 999999999));
-                // Check if the new ID already exists.
-                ret = _db.IdNumbers.SingleOrDefault(c => c.Id == generated_id.Id);
-
-            } while (ret != null);
+                generated_id = new IdNumber(rand.Next(10000, 999999999).ToString());
+            } while (!isUnique(generated_id));
 
             // Add to DB.
             _db.IdNumbers.Add(generated_id);
             _db.SaveChanges();
             return generated_id.Id.ToString();
+        }
+
+        // Check if the new ID already exists.
+        public bool isUnique(IdNumber num)
+        {
+            IdNumber ret = _db.IdNumbers.Find(num.Id);
+            if (ret == null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 

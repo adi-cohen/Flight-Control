@@ -27,13 +27,6 @@ namespace FlightControlWeb.Migrations
                     b.HasKey("FlightId");
 
                     b.ToTable("ExternalFlights");
-
-                    b.HasData(
-                        new
-                        {
-                            FlightId = "WUWA41",
-                            ExternalServerUrl = "http://ronyut2.atwebpages.com/ap2"
-                        });
                 });
 
             modelBuilder.Entity("FlightControlWeb.Models.FlightPlan", b =>
@@ -54,9 +47,8 @@ namespace FlightControlWeb.Migrations
 
             modelBuilder.Entity("FlightControlWeb.Models.IdNumber", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Microsoft.VisualBasic.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Threading;
 
 namespace FlightControlWeb.Controllers
 {
@@ -55,11 +56,16 @@ namespace FlightControlWeb.Controllers
                     // Add to flightId -> URL mapping db.
                     foreach (Flight f in flightsFromCurrServ)
                     {
-                        ExternalFlight newExtFlight = new ExternalFlight();
-                        newExtFlight.FlightId = f.FlightId;
-                        newExtFlight.ExternalServerUrl = serv.Url;
-                        db.ExternalFlights.Add(newExtFlight);
-                        db.SaveChanges();
+                        f.IsExternal = true;
+                        ExternalFlight temp = db.ExternalFlights.Find(f.FlightId);
+                        if (temp == null)
+                        {
+                            ExternalFlight newExtFlight = new ExternalFlight();
+                            newExtFlight.FlightId = f.FlightId;
+                            newExtFlight.ExternalServerUrl = serv.Url;
+                            db.ExternalFlights.Add(newExtFlight);
+                            db.SaveChanges();
+                        }
                     }
                     externalFlights.AddRange(flightsFromCurrServ);
                 }
@@ -75,7 +81,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<HttpStatusCode>> DeleteFlight(string id)
+        public ActionResult<HttpStatusCode> DeleteFlight(string id)
         {
             string deletedId =  manager.RemoveFlight(id);
             if (deletedId == null)
