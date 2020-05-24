@@ -36,8 +36,7 @@ namespace FlightControlWeb.Migrations
                 name: "IdNumbers",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true)
+                    Id = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,11 +85,6 @@ namespace FlightControlWeb.Migrations
                 {
                     table.PrimaryKey("PK_Servers", x => x.Id);
                 });
-
-            migrationBuilder.InsertData(
-                table: "ExternalFlights",
-                columns: new[] { "FlightId", "ExternalServerUrl" },
-                values: new object[] { "WUWA41", "http://ronyut2.atwebpages.com/ap2" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

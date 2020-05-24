@@ -10,12 +10,12 @@ namespace FlightControlWeb.Models
     public class IdNumber
     {
 
-        public IdNumber(long id)
+        public IdNumber(string id)
         {
             Id = id;
         }
 
         [JsonPropertyName("id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
     }
 }

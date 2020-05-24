@@ -72,7 +72,7 @@ namespace FlightControlWeb.Controllers
         // POST: api/FlightPlan
         // insert new flight plan
         [HttpPost]
-        public async Task<ActionResult<FlightPlan>> PostFlightPlan([FromBody] FlightPlan flightPlan)
+        public ActionResult<FlightPlan> PostFlightPlan([FromBody] FlightPlan flightPlan)
         {
             if (!ModelState.IsValid)
             {
