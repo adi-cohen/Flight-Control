@@ -196,11 +196,10 @@ function drawPath(segments, initial_location) {
 
 function getDate() {
     let date = new Date();
-    console.log(date);
+    
     let year = date.getUTCFullYear().toString();
     let month = ('0' + date.getUTCMonth().toString()).substr(-2);
     let day = ('0' + date.getUTCDay().toString()).substr(-2);
-
     let hour = ('0' + date.getUTCHours().toString()).substr(-2);
     let minute = ('0' + date.getUTCMinutes().toString()).substr(-2);
     let second = ('0' + date.getUTCSeconds().toString()).substr(-2);
