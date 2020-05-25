@@ -9,6 +9,7 @@ using Microsoft.VisualBasic.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
 
 namespace FlightControlWeb.Controllers
 {
@@ -31,7 +32,7 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/Flights/
         [HttpGet("")]
-        public async Task<string> GetFlights([FromQuery]string relative_to, [FromQuery] string sync)//, string sync = null)
+        public async Task<ActionResult> GetFlights([FromQuery]string relative_to, [FromQuery] string sync)//, string sync = null)
         {
             bool ToSyncAll = Request.Query.ContainsKey("sync_all");
             DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(DateTime.Parse(relative_to)));
@@ -57,6 +58,10 @@ namespace FlightControlWeb.Controllers
                         // Add to flightId -> URL mapping db.
                         foreach (Flight f in flightsFromCurrServ)
                         {
+                            if (f.FlightId == null )
+                            {
+                                return StatusCode(StatusCodes.Status500InternalServerError);
+                            }
                             f.IsExternal = true;
                             ExternalFlight temp = db.ExternalFlights.Find(f.FlightId);
                             if (temp == null)
@@ -71,7 +76,8 @@ namespace FlightControlWeb.Controllers
                         externalFlights.AddRange(flightsFromCurrServ);
                     } catch (JsonException je)
                     {
-                        //return je.Message;
+                        return StatusCode(StatusCodes.Status500InternalServerError); 
+                       
                     }
                     
                 }
@@ -82,7 +88,7 @@ namespace FlightControlWeb.Controllers
             flightList.AddRange(internalFlights);
 
             string output = JsonConvert.SerializeObject(flightList);
-            return output;
+            return Ok(output);
         }
 
         // DELETE: api/Flights/5
