@@ -63,9 +63,11 @@ namespace FlightControlWeb.Controllers
                             var temp = db.ExternalFlights.Find(f.FlightId);
                             if (temp == null)
                             {
-                                ExternalFlight newExtFlight = new ExternalFlight();
-                                newExtFlight.FlightId = f.FlightId;
-                                newExtFlight.ExternalServerUrl = serv.Url;
+                                ExternalFlight newExtFlight = new ExternalFlight
+                                {
+                                    FlightId = f.FlightId,
+                                    ExternalServerUrl = serv.Url
+                                };
                                 db.ExternalFlights.Add(newExtFlight);
                                 db.SaveChanges();
                             }
