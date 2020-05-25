@@ -41,7 +41,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Server>> DeleteServer(long id)
+        public async Task<ActionResult<Server>> DeleteServer(string id)
         {
             var serv = await db.Servers.FindAsync(id);
             if (serv == null)
