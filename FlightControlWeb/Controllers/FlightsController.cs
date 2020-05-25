@@ -41,16 +41,14 @@ namespace FlightControlWeb.Controllers
             {
                 List<Flight> externalFlights = new List<Flight>();
                 // Build the request string to send.
-                string request = "/api/Flights?relative_to=";
-                request += relative_to;
+                string requestParams = "/api/Flights?relative_to=" + relative_to;
                 // Pass the HTTP request to all registered external servers.
                 foreach (Server serv in db.Servers)
                 {
                     List<Flight> flightsFromCurrServ = new List<Flight>();
-                    string serverUrl = serv.Url;
-                    request = serverUrl + request;
+                    string requestFull = serv.Url + requestParams;
                     // Send the request and get Flight object.
-                    var response = await ServerManager.makeRequest(request);
+                    var response = await ServerManager.makeRequest(requestFull);
                     // Desirialize the list of JSON object we got into list of Flights.
                     try
                     {
