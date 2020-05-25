@@ -9,14 +9,14 @@ namespace FlightControlWeb.Models
 {
     public class ServerManager
     {
-        private readonly DBInteractor _db;
+        private readonly DBInteractor db;
 
         public ServerManager(DBInteractor db)
         {
-            _db = db;
+            this.db = db;
         }
 
-        public static async Task<string> makeRequest(string uri)
+        public static async Task<string> MakeRequest(string uri)
         {
             var client = new HttpClient();
             string jsonString = await client.GetStringAsync(uri);
@@ -26,7 +26,7 @@ namespace FlightControlWeb.Models
 
         public List<Server> GetServers(string servId)
         {
-            return _db.Servers.Where(s => s.Id == servId).ToList();
+            return db.Servers.Where(s => s.Id == servId).ToList();
         }
     }
 }

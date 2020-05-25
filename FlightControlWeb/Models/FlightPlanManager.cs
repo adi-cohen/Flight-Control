@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class FlightPlanManager : IFlightPlanManager
+    public class FlightPlanManager
     {
         private readonly DBInteractor db;
-        private IdGenerator generator;
+        private readonly IdGenerator generator;
 
-        public FlightPlanManager(DBInteractor newDb)
+        public FlightPlanManager(DBInteractor newDB)
         {
-            db = newDb;
-             generator = new IdGenerator(db);
+            db = newDB;
+            generator = new IdGenerator(db);
 
         }
         public void AddFlightPlan(FlightPlan flightplan)
@@ -25,7 +25,7 @@ namespace FlightControlWeb.Models
 
         public void DeleteFlightPlan(int id)
         {
-            FlightPlan flightToRemove = db.FlightPlans.Find(id);
+            var flightToRemove = db.FlightPlans.Find(id);
             db.FlightPlans.Remove(flightToRemove);
             db.SaveChanges();
         }
@@ -33,16 +33,17 @@ namespace FlightControlWeb.Models
 
         public FlightPlan GetFlightPlan(int id)
         {
-            FlightPlan flight = db.FlightPlans.Find(id);
+            var flight = db.FlightPlans.Find(id);
             return flight;
         }
 
         public List<FlightPlan> GetActiveFlights(DateTime time)
         {
-            List<FlightPlan> relativeFlightPlan = new List<FlightPlan>();
-            foreach (FlightPlan flight in db.FlightPlans){
-                List<Segment> segmentList = GetFlightPlanSegments(flight.Id);
-                List<DateTime> startAndEndTime = GetStartAndEndTime(flight.Id, segmentList);
+            var relativeFlightPlan = new List<FlightPlan>();
+            foreach (FlightPlan flight in db.FlightPlans)
+            {
+                var segmentList = GetFlightPlanSegments(flight.Id);
+                var startAndEndTime = GetStartAndEndTime(flight.Id, segmentList);
                 // if the flight active in the requierd time
                 if (startAndEndTime[0] <= time && startAndEndTime[1] >= time)
                 {
@@ -52,45 +53,40 @@ namespace FlightControlWeb.Models
             return relativeFlightPlan;
         }
 
-        public List<Segment> GetFlightPlanSegments(string flightPlanid)
+        public List<Segment> GetFlightPlanSegments(string flightPlanID)
         {
-            List<Segment> segList = new List<Segment>();
-            segList = db.Segments.Where(s => s.FlightId == flightPlanid).ToList();
+            var segList = new List<Segment>();
+            segList = db.Segments.Where(s => s.FlightId == flightPlanID).ToList();
             segList.OrderBy(s => s.Id);
-            return db.Segments.Where(s => s.FlightId == flightPlanid).OrderBy(s => s.SegmentNumber).ToList();
+            return db.Segments.Where(s => s.FlightId == flightPlanID).OrderBy(s => s.SegmentNumber).ToList();
 
         }
 
-        private List<DateTime> GetStartAndEndTime(string flightId, List<Segment> segList)
+        private List<DateTime> GetStartAndEndTime(string flightID, List<Segment> segmentsList)
         {
             long seconds = 0;
             //sum all the seconds during the flight
-            foreach(Segment s in segList)
+            foreach (Segment s in segmentsList)
             {
                 seconds += s.TimeInSeconds;
             }
             //adding the seconds to the startTime
-            InitialLocation initLocation= db.InitLocations.Where(l => l.FlightId == flightId).First();
+            var initLocation = db.InitLocations.Where(l => l.FlightId == flightID).First();
             DateTime endTime = initLocation.DateTime;
             endTime = endTime.AddSeconds(seconds);
-            List<DateTime> startAndEndTime = new List<DateTime>()
+            var startAndEndTime = new List<DateTime>()
             {
                 initLocation.DateTime, endTime
             };
             return startAndEndTime;
         }
 
-        public long GanerateID()
-        {
-            Random rand = new Random();
-            long id = rand.Next(10000, 999999999);
-            return id;
-        }
 
-        public FlightPlan createNewFlightPlan(FlightPlan flightPlan)
+
+        public FlightPlan CreateNewFlightPlan(FlightPlan flightPlan)
         {
             //generate random id
-            string FlightId =  generator.GanerateID();
+            string FlightId = generator.GanerateId();
             flightPlan.Id = FlightId;
             db.FlightPlans.Add(flightPlan);
 
@@ -102,13 +98,13 @@ namespace FlightControlWeb.Models
                 element.SegmentNumber = segmentNum;
                 segmentNum++;
                 element.FlightId = FlightId;
-                element.Id = generator.GanerateID();
+                element.Id = generator.GanerateId();
                 db.Segments.Add(element);
             }
 
             //adding InitialLocation to DB
             flightPlan.InitialLocation.FlightId = FlightId;
-            flightPlan.InitialLocation.Id = generator.GanerateID();
+            flightPlan.InitialLocation.Id = generator.GanerateId();
             db.InitLocations.Add(flightPlan.InitialLocation);
 
             db.SaveChanges();

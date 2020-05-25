@@ -7,34 +7,34 @@ namespace FlightControlWeb.Models
     public class IdGenerator
     {
 
-        private readonly DBInteractor _db;
+        private readonly DBInteractor db;
 
         public IdGenerator(DBInteractor db)
         {
-            _db = db;
+            this.db = db;
         }
 
         // Generate random ID number string.
-        public string GanerateID()
+        public string GanerateId()
         {
-            Random rand = new Random();
-            IdNumber generated_id;
+            var rand = new Random();
+            IdNumber generatedID;
 
             do
             {
-                generated_id = new IdNumber(rand.Next(10000, 999999999).ToString());
-            } while (!isUnique(generated_id));
+                generatedID = new IdNumber(rand.Next(10000, 999999999).ToString());
+            } while (!IsUnique(generatedID));
 
             // Add to DB.
-            _db.IdNumbers.Add(generated_id);
-            _db.SaveChanges();
-            return generated_id.Id.ToString();
+            db.IdNumbers.Add(generatedID);
+            db.SaveChanges();
+            return generatedID.Id.ToString();
         }
 
         // Check if the new ID already exists.
-        public bool isUnique(IdNumber num)
+        public bool IsUnique(IdNumber num)
         {
-            IdNumber ret = _db.IdNumbers.Find(num.Id);
+            var ret = db.IdNumbers.Find(num.Id);
             if (ret == null)
             {
                 return true;
