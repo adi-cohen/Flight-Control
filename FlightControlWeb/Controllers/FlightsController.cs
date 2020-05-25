@@ -52,22 +52,30 @@ namespace FlightControlWeb.Controllers
                     // Send the request and get Flight object.
                     var response = await ServerManager.makeRequest(request);
                     // Desirialize the list of JSON object we got into list of Flights.
-                    flightsFromCurrServ.AddRange(JsonConvert.DeserializeObject<List<Flight>>(response));
-                    // Add to flightId -> URL mapping db.
-                    foreach (Flight f in flightsFromCurrServ)
+                    try
                     {
-                        f.IsExternal = true;
-                        ExternalFlight temp = db.ExternalFlights.Find(f.FlightId);
-                        if (temp == null)
+                        List<Flight> tmp = JsonConvert.DeserializeObject<List<Flight>>(response);
+                        flightsFromCurrServ.AddRange(tmp);
+                        // Add to flightId -> URL mapping db.
+                        foreach (Flight f in flightsFromCurrServ)
                         {
-                            ExternalFlight newExtFlight = new ExternalFlight();
-                            newExtFlight.FlightId = f.FlightId;
-                            newExtFlight.ExternalServerUrl = serv.Url;
-                            db.ExternalFlights.Add(newExtFlight);
-                            db.SaveChanges();
+                            f.IsExternal = true;
+                            ExternalFlight temp = db.ExternalFlights.Find(f.FlightId);
+                            if (temp == null)
+                            {
+                                ExternalFlight newExtFlight = new ExternalFlight();
+                                newExtFlight.FlightId = f.FlightId;
+                                newExtFlight.ExternalServerUrl = serv.Url;
+                                db.ExternalFlights.Add(newExtFlight);
+                                db.SaveChanges();
+                            }
                         }
+                        externalFlights.AddRange(flightsFromCurrServ);
+                    } catch (JsonException je)
+                    {
+                        //return je.Message;
                     }
-                    externalFlights.AddRange(flightsFromCurrServ);
+                    
                 }
                 // Add the external flights to general flightList.
                 flightList.AddRange(externalFlights);
