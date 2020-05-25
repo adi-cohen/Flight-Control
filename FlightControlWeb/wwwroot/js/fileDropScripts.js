@@ -1,20 +1,20 @@
 ﻿function allowDrop(event) {
     event.preventDefault();
     document.getElementById("draganddropimage").style.visibility = "visible";
-    $("#myFlightList").hide();
+    $("#flightList").hide();
     $("#draganddropimage").show();
 }
 
 function dragLeave(event) {
     event.preventDefault();
     $("#draganddropimage").hide();
-    $("#myFlightList").show();
+    $("#flightList").show();
 }
 
 function drop(event) {
     event.preventDefault();
     $("#draganddropimage").hide();
-    $("#myFlightList").show();
+    $("#flightList").show();
 
     // change
     let file = event.dataTransfer.files[0];
