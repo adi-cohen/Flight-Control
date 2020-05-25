@@ -45,7 +45,7 @@ namespace FlightControlWeb.Models
                     {
                         TimeSpan theDiffFromStartTime = time - lastStrartTime;
                         double theDiffFromStartTimeInSeconds = (double) theDiffFromStartTime.TotalSeconds;
-                        double precentOfTime  = (Double)(Math.Abs(theDiffFromStartTimeInSeconds) / Math.Abs(seg.TimeInSeconds));
+                        double precentOfTime = Math.Abs(theDiffFromStartTimeInSeconds) / Math.Abs(seg.TimeInSeconds);
                         double startLongitude = lastLongitude;
                         double startLatitude = lastLatitude;
                         double endLongitude = seg.Longitude;

@@ -33,7 +33,7 @@ createMap();
 let func = function dataUpdate() {
     //let getOptions = prepareGetAll();
     let date = getDate();
-    console.log(date);
+    //console.log(date);
     let url = "/api/Flights?relative_to=".concat(date).concat("&sync_all");
     //let url = "http://ronyut.atwebpages.com/ap2/api/Flights?relative_to=".concat(date);
 
@@ -177,21 +177,25 @@ function getFinishTime(startTime, seconds) {
 }
 
 function drawPath(segments, initial_location) {
-    if (polyline) {
-        polyline.remove(mymap);
+    if (segments == null) {
+        tempAlert("NULL segment received. please try again.", 5000);
     }
+    else {
+        if (polyline) {
+            polyline.remove(mymap);
+        }
 
-    let lon = initial_location.longitude;
-    let lat = initial_location.latitude;
-    let len = segments.length;
-    let path = [ [lon,lat] ];
-    for (let i = 0; i < len; i++) {
-        path.push([segments[i].longitude, segments[i].latitude]);
+        let lon = initial_location.longitude;
+        let lat = initial_location.latitude;
+        let len = segments.length;
+        let path = [[lon, lat]];
+        for (let i = 0; i < len; i++) {
+            path.push([segments[i].longitude, segments[i].latitude]);
+        }
+        polyline = L.polyline(path, { color: 'red' });
+        polyline.addTo(mymap);
+        mymap.fitBounds(polyline.getBounds());
     }
-    polyline = L.polyline(path, { color: 'red' });
-    polyline.addTo(mymap);
-    mymap.fitBounds(polyline.getBounds());
-
 }
 
 function getDate() {
@@ -200,8 +204,6 @@ function getDate() {
     let year = date.getUTCFullYear().toString();
     let month = ('0' + (date.getUTCMonth()+1).toString()).substr(-2);
     let day = ('0' + date.getUTCDate().toString()).substr(-2);
-    console.log("the date.getUTCDay() is: " + date.getUTCDay());
-    console.log(" the date.getUTCDay().toString().substr(-2): " + date.getUTCDay().toString().substr(-2));
     let hour = ('0' + date.getUTCHours().toString()).substr(-2);
     let minute = ('0' + date.getUTCMinutes().toString()).substr(-2);
     let second = ('0' + date.getUTCSeconds().toString()).substr(-2);
@@ -343,7 +345,7 @@ function removeFlight(event) {
 
 function tempAlert(msg, duration) {
     let alertBox = document.createElement("div");
-    alertBox.setAttribute("style", "position:absolute;top:18%;left:20%;background-color:red;font-size:large;border-radius: 5px;");
+    alertBox.setAttribute("style", "position:absolute;top:2%;left:2%;background-color:red;font-size:large;border-radius: 5px;");
     alertBox.innerHTML = "### Error: " + msg + " ###";
     setTimeout(function () {
         alertBox.parentNode.removeChild(alertBox);
