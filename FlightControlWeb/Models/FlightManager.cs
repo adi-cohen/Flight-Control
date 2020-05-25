@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class FlightManager
+    internal class FlightManager
     {
         private readonly FlightPlanManager flightPlanManager;
         private readonly DBInteractor db;
 
-        public FlightManager(FlightPlanManager flightPlanManager, DBInteractor newDB)
+        internal FlightManager(FlightPlanManager flightPlanManager, DBInteractor newDB)
         {
             this.db = newDB;
             this.flightPlanManager = flightPlanManager;
         }
-        public List<Flight> GetAllFlights(DateTime time)
+        internal List<Flight> GetAllFlights(DateTime time)
         {
             //get all active flights plans according to time
            var ActiveFlights = flightPlanManager.GetActiveFlights(time);
@@ -26,9 +26,9 @@ namespace FlightControlWeb.Models
             var flightList = new List<Flight>();
             foreach (FlightPlan fp in ActiveFlights)
             {
-                double lastLongitude = db.InitLocations.Where(i => i.FlightId == fp.Id).First().Longitude;
-                double lastLatitude = db.InitLocations.Where(i => i.FlightId == fp.Id).First().Latitude;
-                DateTime lastStrartTime = db.InitLocations.Where(i => i.FlightId == fp.Id).First().DateTime;
+                double lastLongitude = db.InitLocations.Where(initLocations => initLocations.FlightId == fp.Id).First().Longitude;
+                double lastLatitude = db.InitLocations.Where(initLocations => initLocations.FlightId == fp.Id).First().Latitude;
+                DateTime lastStrartTime = db.InitLocations.Where(initLocations => initLocations.FlightId == fp.Id).First().DateTime;
 
                 var segList = flightPlanManager.GetFlightPlanSegments(fp.Id);
                 foreach (Segment seg in segList)
@@ -93,7 +93,7 @@ namespace FlightControlWeb.Models
             return flightList;
         }
 
-        public string RemoveFlight(string id)
+        internal string RemoveFlight(string id)
         {
             var flightPlan = db.FlightPlans.Find(id);
 
@@ -104,14 +104,14 @@ namespace FlightControlWeb.Models
 
             //delete all the segment of the flight
 
-            var segmentToDelete = db.Segments.Where(e => e.FlightId == id).ToList();
+            var segmentToDelete = db.Segments.Where(segment => segment.FlightId == id).ToList();
             foreach (Segment s in segmentToDelete)
             {
                 db.Segments.Remove(s);
             }
 
             //delete the initial location of the flight
-            var initLocationToDelete = db.InitLocations.Where(e => e.FlightId == id).First();
+            var initLocationToDelete = db.InitLocations.Where(initLocations => initLocations.FlightId == id).First();
             db.InitLocations.Remove(initLocationToDelete);
 
             //delete the flight plan

@@ -4,18 +4,18 @@ using System.Linq;
 
 namespace FlightControlWeb.Models
 {
-    public class IdGenerator
+    internal class IdGenerator
     {
 
         private readonly DBInteractor db;
 
-        public IdGenerator(DBInteractor db)
+        internal IdGenerator(DBInteractor db)
         {
             this.db = db;
         }
 
         // Generate random ID number string.
-        public string GanerateId()
+        internal string GanerateId()
         {
             var rand = new Random();
             IdNumber generatedID;
@@ -32,7 +32,7 @@ namespace FlightControlWeb.Models
         }
 
         // Check if the new ID already exists.
-        public bool IsUnique(IdNumber num)
+        internal bool IsUnique(IdNumber num)
         {
             var ret = db.IdNumbers.Find(num.Id);
             if (ret == null)

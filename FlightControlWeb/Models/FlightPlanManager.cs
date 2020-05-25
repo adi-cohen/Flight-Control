@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class FlightPlanManager
+    internal class FlightPlanManager
     {
         private readonly DBInteractor db;
         private readonly IdGenerator generator;
 
-        public FlightPlanManager(DBInteractor newDB)
+        internal FlightPlanManager(DBInteractor newDB)
         {
             db = newDB;
             generator = new IdGenerator(db);
 
         }
-        public void AddFlightPlan(FlightPlan flightplan)
+        internal void AddFlightPlan(FlightPlan flightplan)
         {
             db.FlightPlans.Add(flightplan);
             db.SaveChanges();
         }
 
-        public void DeleteFlightPlan(int id)
+        internal void DeleteFlightPlan(int id)
         {
             var flightToRemove = db.FlightPlans.Find(id);
             db.FlightPlans.Remove(flightToRemove);
@@ -31,13 +31,13 @@ namespace FlightControlWeb.Models
         }
 
 
-        public FlightPlan GetFlightPlan(int id)
+        internal FlightPlan GetFlightPlan(int id)
         {
             var flight = db.FlightPlans.Find(id);
             return flight;
         }
 
-        public List<FlightPlan> GetActiveFlights(DateTime time)
+        internal List<FlightPlan> GetActiveFlights(DateTime time)
         {
             var relativeFlightPlan = new List<FlightPlan>();
             foreach (FlightPlan flight in db.FlightPlans)
@@ -53,12 +53,12 @@ namespace FlightControlWeb.Models
             return relativeFlightPlan;
         }
 
-        public List<Segment> GetFlightPlanSegments(string flightPlanID)
+        internal List<Segment> GetFlightPlanSegments(string flightPlanID)
         {
             var segList = new List<Segment>();
-            segList = db.Segments.Where(s => s.FlightId == flightPlanID).ToList();
-            segList.OrderBy(s => s.Id);
-            return db.Segments.Where(s => s.FlightId == flightPlanID).OrderBy(s => s.SegmentNumber).ToList();
+            segList = db.Segments.Where(segment => segment.FlightId == flightPlanID).ToList();
+            segList.OrderBy(segment => segment.Id);
+            return db.Segments.Where(segment => segment.FlightId == flightPlanID).OrderBy(segment => segment.SegmentNumber).ToList();
 
         }
 
@@ -71,7 +71,7 @@ namespace FlightControlWeb.Models
                 seconds += s.TimeInSeconds;
             }
             //adding the seconds to the startTime
-            var initLocation = db.InitLocations.Where(l => l.FlightId == flightID).First();
+            var initLocation = db.InitLocations.Where(initialLocation => initialLocation.FlightId == flightID).First();
             DateTime endTime = initLocation.DateTime;
             endTime = endTime.AddSeconds(seconds);
             var startAndEndTime = new List<DateTime>()
@@ -83,7 +83,7 @@ namespace FlightControlWeb.Models
 
 
 
-        public FlightPlan CreateNewFlightPlan(FlightPlan flightPlan)
+        internal FlightPlan CreateNewFlightPlan(FlightPlan flightPlan)
         {
             //generate random id
             string FlightId = generator.GanerateId();

@@ -7,16 +7,16 @@ using System;
 
 namespace FlightControlWeb.Models
 {
-    public class ServerManager
+    internal class ServerManager
     {
         private readonly DBInteractor db;
 
-        public ServerManager(DBInteractor db)
+        internal ServerManager(DBInteractor db)
         {
             this.db = db;
         }
 
-        public static async Task<string> MakeRequest(string uri)
+        internal static async Task<string> MakeRequest(string uri)
         {
             var client = new HttpClient();
             string jsonString = await client.GetStringAsync(uri);
@@ -24,9 +24,9 @@ namespace FlightControlWeb.Models
             return jsonString;
         }
 
-        public List<Server> GetServers(string servId)
+        internal List<Server> GetServers(string servId)
         {
-            return db.Servers.Where(s => s.Id == servId).ToList();
+            return db.Servers.Where(server => server.Id == servId).ToList();
         }
     }
 }

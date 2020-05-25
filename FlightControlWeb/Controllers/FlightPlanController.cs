@@ -65,8 +65,8 @@ namespace FlightControlWeb.Controllers
             else
             {
                 //get all the details about the internal flight
-                var flightSegments = db.Segments.Where(s => s.FlightId == flightPlan.Id).OrderBy(s => s.SegmentNumber).ToList();
-                var flightinitLocation = db.InitLocations.Where(i => i.FlightId == flightPlan.Id).First();
+                var flightSegments = db.Segments.Where(segment => segment.FlightId == flightPlan.Id).OrderBy(segment => segment.SegmentNumber).ToList();
+                var flightinitLocation = db.InitLocations.Where(initialLocation => initialLocation.FlightId == flightPlan.Id).First();
                 DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
                 UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
                 flightinitLocation.DateTime = UtcTime;

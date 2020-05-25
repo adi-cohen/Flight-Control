@@ -75,11 +75,15 @@ namespace FlightControlWeb
 
         private static void UpdateDatabase(IApplicationBuilder app)
         {
-            using var serviceScope = app.ApplicationServices
+            using (var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope();
-            using var context = serviceScope.ServiceProvider.GetService<DBInteractor>();
-            context.Database.Migrate();
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<DBInteractor>())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
     }
 }
