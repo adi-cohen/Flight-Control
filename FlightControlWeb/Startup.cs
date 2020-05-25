@@ -30,7 +30,7 @@ namespace FlightControlWeb
 
 
             services.AddDbContext<DBInteractor>();
-            
+
 
             services.AddControllers();
             //for webApi controllers and routing
@@ -64,8 +64,8 @@ namespace FlightControlWeb
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                
-                var context = serviceScope.ServiceProvider.GetService <DBInteractor> ();
+
+                var context = serviceScope.ServiceProvider.GetService<DBInteractor>();
                 context.Database.EnsureDeleted();
                 context.Database.Migrate();
             }
@@ -75,15 +75,11 @@ namespace FlightControlWeb
 
         private static void UpdateDatabase(IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices
+            using var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<DBInteractor>())
-                {
-                    context.Database.Migrate();
-                }
-            }
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<DBInteractor>();
+            context.Database.Migrate();
         }
     }
 }

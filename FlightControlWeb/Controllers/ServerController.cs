@@ -14,9 +14,9 @@ namespace FlightControlWeb.Controllers
     {
         private readonly DBInteractor db;
 
-        public ServerController(DBInteractor newDb)
+        public ServerController(DBInteractor newDB)
         {
-            db = newDb;
+            db = newDB;
         }
 
         // GET: api/Server
@@ -31,7 +31,8 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<HttpStatusCode>> PostServer([FromBody] Server serv)
         {
             IdGenerator generator = new IdGenerator(db);
-            if (generator.isUnique(new IdNumber(serv.Id))) {
+            if (generator.IsUnique(new IdNumber(serv.Id)))
+            {
                 db.Servers.Add(serv);
                 await db.SaveChangesAsync();
                 return HttpStatusCode.Created;

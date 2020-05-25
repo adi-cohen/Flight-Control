@@ -7,30 +7,30 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class FlightManager
+    internal class FlightManager
     {
-        private IFlightPlanManager flightPlanManager;
-        private  DBInteractor db;
+        private readonly FlightPlanManager flightPlanManager;
+        private readonly DBInteractor db;
 
-        public FlightManager(IFlightPlanManager flightPlanManager, DBInteractor newDb)
+        internal FlightManager(FlightPlanManager flightPlanManager, DBInteractor newDB)
         {
-            this.db = newDb;
+            this.db = newDB;
             this.flightPlanManager = flightPlanManager;
         }
-        public List<Flight> getAllFlights (DateTime time)
+        internal List<Flight> GetAllFlights(DateTime time)
         {
             //get all active flights plans according to time
-            List<FlightPlan> ActiveFlights = flightPlanManager.GetActiveFlights(time);
+           var ActiveFlights = flightPlanManager.GetActiveFlights(time);
 
             //create flights list
-            List<Flight> flightList = new List<Flight>();
+            var flightList = new List<Flight>();
             foreach (FlightPlan fp in ActiveFlights)
             {
-                double lastLongitude = db.InitLocations.Where(i => i.FlightId == fp.Id).First().Longitude;
-                double lastLatitude = db.InitLocations.Where(i => i.FlightId == fp.Id).First().Latitude;
-                DateTime lastStrartTime = db.InitLocations.Where(i => i.FlightId == fp.Id).First().DateTime;
+                double lastLongitude = db.InitLocations.Where(initLocations => initLocations.FlightId == fp.Id).First().Longitude;
+                double lastLatitude = db.InitLocations.Where(initLocations => initLocations.FlightId == fp.Id).First().Latitude;
+                DateTime lastStrartTime = db.InitLocations.Where(initLocations => initLocations.FlightId == fp.Id).First().DateTime;
 
-                List<Segment> segList = flightPlanManager.GetFlightPlanSegments(fp.Id);
+                var segList = flightPlanManager.GetFlightPlanSegments(fp.Id);
                 foreach (Segment seg in segList)
                 {
                     DateTime newEndTime = lastStrartTime.AddSeconds(seg.TimeInSeconds);
@@ -44,21 +44,21 @@ namespace FlightControlWeb.Models
                     else //The requested time is in the segment
                     {
                         TimeSpan theDiffFromStartTime = time - lastStrartTime;
-                        double theDiffFromStartTimeInSeconds = (double) theDiffFromStartTime.TotalSeconds;
+                        double theDiffFromStartTimeInSeconds = (double)theDiffFromStartTime.TotalSeconds;
                         double precentOfTime = Math.Abs(theDiffFromStartTimeInSeconds) / Math.Abs(seg.TimeInSeconds);
                         double startLongitude = lastLongitude;
                         double startLatitude = lastLatitude;
                         double endLongitude = seg.Longitude;
                         double endlatitude = seg.Latitude;
                         //Use Pythagorean Theorem to determine segment length
-                        double distanceOfAllSegment = Math.Sqrt( Math.Pow((endlatitude - startLatitude), 2) + Math.Pow((endLongitude - startLongitude), 2));
+                        double distanceOfAllSegment = Math.Sqrt(Math.Pow((endlatitude - startLatitude), 2) + Math.Pow((endLongitude - startLongitude), 2));
                         double distanceFromStartUntilTime = distanceOfAllSegment * precentOfTime;
                         //Calculate the angle to calculate the new position
                         double angle = Math.Acos((Math.Abs(startLongitude - endLongitude)) / distanceOfAllSegment);
                         double LatitudeDiff = precentOfTime * distanceOfAllSegment * Math.Sin(angle);
-                        double LongitudeDiff = precentOfTime * distanceOfAllSegment * Math.Cos  (angle);
+                        double LongitudeDiff = precentOfTime * distanceOfAllSegment * Math.Cos(angle);
                         double newLatitude, newLongitude;
-                        if (startLatitude < endlatitude )
+                        if (startLatitude < endlatitude)
                         {
                             newLatitude = startLatitude + LatitudeDiff;
                         }
@@ -74,14 +74,16 @@ namespace FlightControlWeb.Models
                         {
                             newLongitude = startLongitude - LongitudeDiff;
                         }
-                        Flight newFlight = new Flight();
-                        newFlight.FlightId = fp.Id ;
-                        newFlight.CompanyName = fp.CompanyName;
-                        newFlight.Passengers = fp.Passengers;
-                        newFlight.IsExternal = false;
-                        newFlight.Latitude = newLatitude;
-                        newFlight.Longitude = newLongitude;
-                        newFlight.Date = lastStrartTime.AddSeconds(theDiffFromStartTimeInSeconds);
+                        var newFlight = new Flight
+                        {
+                            FlightId = fp.Id,
+                            CompanyName = fp.CompanyName,
+                            Passengers = fp.Passengers,
+                            IsExternal = false,
+                            Latitude = newLatitude,
+                            Longitude = newLongitude,
+                            Date = lastStrartTime.AddSeconds(theDiffFromStartTimeInSeconds)
+                        };
                         flightList.Add(newFlight);
                         break;
                     }
@@ -91,25 +93,25 @@ namespace FlightControlWeb.Models
             return flightList;
         }
 
-        public string RemoveFlight (string id)
+        internal string RemoveFlight(string id)
         {
-            FlightPlan flightPlan =  db.FlightPlans.Find(id);
+            var flightPlan = db.FlightPlans.Find(id);
 
             if (flightPlan == null)
             {
-                return null ;
+                return null;
             }
 
             //delete all the segment of the flight
 
-            List<Segment> segmentToDelete = db.Segments.Where(e => e.FlightId == id).ToList();
+            var segmentToDelete = db.Segments.Where(segment => segment.FlightId == id).ToList();
             foreach (Segment s in segmentToDelete)
             {
                 db.Segments.Remove(s);
             }
 
             //delete the initial location of the flight
-            InitialLocation initLocationToDelete = db.InitLocations.Where(e => e.FlightId == id).First();
+            var initLocationToDelete = db.InitLocations.Where(initLocations => initLocations.FlightId == id).First();
             db.InitLocations.Remove(initLocationToDelete);
 
             //delete the flight plan
