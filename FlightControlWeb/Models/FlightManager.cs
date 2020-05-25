@@ -44,8 +44,8 @@ namespace FlightControlWeb.Models
                     else //The requested time is in the segment
                     {
                         TimeSpan theDiffFromStartTime = time - lastStrartTime;
-                        int theDiffFromStartTimeInSeconds = (int) theDiffFromStartTime.TotalSeconds;
-                        int precentOfTime = Math.Abs(theDiffFromStartTimeInSeconds) / Math.Abs(seg.TimeInSeconds);
+                        double theDiffFromStartTimeInSeconds = (double) theDiffFromStartTime.TotalSeconds;
+                        double precentOfTime  = (Double)(Math.Abs(theDiffFromStartTimeInSeconds) / Math.Abs(seg.TimeInSeconds));
                         double startLongitude = lastLongitude;
                         double startLatitude = lastLatitude;
                         double endLongitude = seg.Longitude;

@@ -43,7 +43,7 @@ let func = function dataUpdate() {
         url: url,
         type: 'GET',
         dataType: 'JSON',
-        success: function (response) {
+        success: function (response) {           
             clearLists();
             if (layerGroup) {
                 layerGroup.clearLayers();
@@ -65,6 +65,7 @@ let func = function dataUpdate() {
             }
         },
         error: function (error) {
+            
             tempAlert("Can not sync flight from the servers.", 5000);
         }
     });
