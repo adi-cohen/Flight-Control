@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Net;
 
 namespace FlightControlWeb.Controllers
 {
@@ -31,7 +32,7 @@ namespace FlightControlWeb.Controllers
         // GET: api/FlightPlan/5
         //return flight plan by id
         [HttpGet("{id}")]
-        public async Task<ActionResult<string>> GetFlightPlan(string id)
+        public async Task<ActionResult> GetFlightPlan(string id)
         {
             //FlightPlan flightPlan = null;
             // Search in local flight plans.
@@ -44,13 +45,31 @@ namespace FlightControlWeb.Controllers
                 {
                     return NotFound();
                 }
-                // Build request string.
+                // Build request string.    
                 string request = "/api/FlightPlan/" + id;
                 string serverUrl = extFlightPlan.ExternalServerUrl;
                 request = serverUrl + request;
                 // Send the request and get FlightPlan object.
                 var response = await ServerManager.makeRequest(request);
-                flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);
+                try
+                {
+                    flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);
+                    if (flightPlan.InitialLocation == null ||
+                        flightPlan.Passengers == null ||
+                        flightPlan.Id == null ||
+                        flightPlan.Segments == null)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                       // return NotFound();
+                    }
+                }catch(JsonException je)
+                    {
+
+                    //Console.WriteLine("here");
+                    return NotFound();
+                    
+                      //return HttpStatusCode.InternalServerError;
+                }
             }
             else
             {
@@ -64,7 +83,9 @@ namespace FlightControlWeb.Controllers
                 flightPlan.InitialLocation = flightinitLocation;
             }
             string output = JsonConvert.SerializeObject(flightPlan);
-            return output;
+            return Ok(output);
+
+            //return output;
         }
 
         
