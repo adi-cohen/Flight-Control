@@ -55,21 +55,15 @@ namespace FlightControlWeb.Controllers
                 {
                     flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);
                     if (flightPlan.InitialLocation == null ||
-                        flightPlan.Passengers == null ||
-                        flightPlan.Id == null ||
                         flightPlan.Segments == null)
                     {
-                        return StatusCode(StatusCodes.Status500InternalServerError);
-                       // return NotFound();
+                        return StatusCode(StatusCodes.Status500InternalServerError, "one of the fields is null, try again");
                     }
-                }catch(JsonException je)
-                    {
-
-                    //Console.WriteLine("here");
-                    return NotFound();
-                    
-                      //return HttpStatusCode.InternalServerError;
                 }
+                catch(JsonException je)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, je.Data);
+                    }
             }
             else
             {

@@ -55,8 +55,8 @@ namespace FlightControlWeb.Models
                         double distanceFromStartUntilTime = distanceOfAllSegment * precentOfTime;
                         //Calculate the angle to calculate the new position
                         double angle = Math.Acos((Math.Abs(startLongitude - endLongitude)) / distanceOfAllSegment);
-                        double LatitudeDiff = precentOfTime * distanceOfAllSegment * Math.Cos(angle);
-                        double LongitudeDiff = precentOfTime * distanceOfAllSegment * Math.Sin(angle);
+                        double LatitudeDiff = precentOfTime * distanceOfAllSegment * Math.Sin(angle);
+                        double LongitudeDiff = precentOfTime * distanceOfAllSegment * Math.Cos  (angle);
                         double newLatitude, newLongitude;
                         if (startLatitude < endlatitude )
                         {
