@@ -18,12 +18,16 @@ namespace FlightControlWeb.Controllers
     {
         private readonly DBInteractor db;
         private readonly FlightPlanManager manager;
+        
+        public IServerManager ServerManagerProp { get; set; }
+
+
 
         public FlightPlanController(DBInteractor newDB)
         {
             db = newDB;
             manager = new FlightPlanManager(db);
-
+            ServerManagerProp = new ServerManager(db);
         }
 
         // GET: api/FlightPlan/5
@@ -47,7 +51,7 @@ namespace FlightControlWeb.Controllers
                 string serverUrl = extFlightPlan.ExternalServerUrl;
                 request = serverUrl + request;
                 // Send the request and get FlightPlan object.
-                var response = await ServerManager.MakeRequest(request);
+                var response = await ServerManagerProp.MakeRequest(request);
                 try
                 {
                     flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);

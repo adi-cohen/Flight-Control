@@ -19,8 +19,12 @@ namespace FlightControlWeb.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-            .UseSqlite(@"Data Source = FlightControl.db;");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder
+                .UseSqlite(@"Data Source = FlightControl.db;");
+            }
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

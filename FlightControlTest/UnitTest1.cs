@@ -1,7 +1,13 @@
+using FakeItEasy;
 using FlightControlWeb.Controllers;
 using FlightControlWeb.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+
 
 namespace FlightControlTest
 {
@@ -9,15 +15,15 @@ namespace FlightControlTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public async Task GetFlightPlanByIdFromExternalServer()
         {
-            //create In Memory Database
+
+            //arrange - create In Memory Database
             var options = new DbContextOptionsBuilder<DBInteractor>()
             .UseInMemoryDatabase(databaseName: "filghtContolDB")
             .Options;
 
             //// Create mocked Context by seeding Data as per Schema///
-
             using (var context = new DBInteractor(options))
             {
                 context.Servers.Add(new Server
@@ -25,16 +31,12 @@ namespace FlightControlTest
                     Id = "1",
                     Url = "serverTest"
                 });
-                context.FlightPlans.Add(new FlightPlan
+                context.ExternalFlights.Add(new ExternalFlight
                 {
-                    Passengers = 1,
-                    CompanyName = "companyTest",
-                    InitialLocation = new InitialLocation
-                    {
+                    FlightId = "1",
+                    ExternalServerUrl = "serverTest"
+                });
 
-                    }
-                })
-               
                 context.SaveChanges();
             }
 
@@ -42,15 +44,23 @@ namespace FlightControlTest
             using (var context = new DBInteractor(options))
             {
 
+                var stub = new StubIServerManager();
+
+                FlightPlanController controller = new FlightPlanController(context)
+                {
+                    ServerManagerProp = stub
+                };
+                var actionResult = await controller.GetFlightPlan("1");
+                var okObject = actionResult as OkObjectResult;
+                //var actualResult = result.Value;
+                var flight = JsonConvert.DeserializeObject<FlightPlan>(okObject.Value.ToString());
+                Assert.AreEqual(1, flight.Passengers);
+                Assert.AreEqual("testCompany", flight.CompanyName);
+                Assert.AreEqual(3, flight.Segments.Count);
+                Assert.AreEqual(20, flight.InitialLocation.Latitude);
+                Assert.AreEqual(25, flight.InitialLocation.Longitude);
+
             }
-
-
-                //arrange 
-                var flightController = new FlightsController();
-            var flights = flightController.GetFlights("");
-            Assert.AreEqual(flights.Result, null); // Why 123?
-
-            
         }
 
 

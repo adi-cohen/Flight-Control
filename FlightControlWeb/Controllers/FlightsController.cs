@@ -19,11 +19,13 @@ namespace FlightControlWeb.Controllers
     {
         private readonly DBInteractor db;
         private readonly FlightManager manager;
+        public IServerManager ServerManagerProp { get; set; }
 
         public FlightsController(DBInteractor context)
         {
             db = context;
             manager = new FlightManager(new FlightPlanManager(context), context);
+            ServerManagerProp = new ServerManager(db);
         }
 
 
@@ -46,7 +48,7 @@ namespace FlightControlWeb.Controllers
                     var flightsFromCurrServ = new List<Flight>();
                     string requestFull = serv.Url + requestParams;
                     // Send the request and get Flight object.
-                    var response = await ServerManager.MakeRequest(requestFull);
+                    var response = await ServerManagerProp.MakeRequest(requestFull);
                     // Desirialize the list of JSON object we got into list of Flights.
                     try
                     {
