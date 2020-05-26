@@ -18,7 +18,7 @@ namespace FlightControlWeb.Controllers
     {
         private readonly DBInteractor db;
         private readonly FlightPlanManager manager;
-        
+
         public IServerManager ServerManagerProp { get; set; }
 
 
@@ -35,7 +35,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetFlightPlan(string id)
         {
-            
+
             // Search in local flight plans.
             var flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
@@ -73,6 +73,7 @@ namespace FlightControlWeb.Controllers
                 var flightinitLocation = db.InitLocations.Where(initialLocation => initialLocation.FlightId == flightPlan.Id).First();
                 DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
                 UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
+                flightinitLocation.DateTime = UtcTime;
                 flightinitLocation.DateTime = UtcTime;
                 flightPlan.Segments = flightSegments;
                 flightPlan.InitialLocation = flightinitLocation;

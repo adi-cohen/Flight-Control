@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 namespace FlightControlTest
 {
     [TestClass]
-    public class UnitTest1
+    public class UnitTestFlightControl
     {
         [TestMethod]
-        public async Task GetFlightPlanByIdFromExternalServer()
+        public async Task GetFlightPlan_ShouldReturnFlightPlanById_fromExternalServer()
         {
 
             //arrange - create In Memory Database
