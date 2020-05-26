@@ -35,7 +35,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetFlightPlan(string id)
         {
-            //FlightPlan flightPlan = null;
+            
             // Search in local flight plans.
             var flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
