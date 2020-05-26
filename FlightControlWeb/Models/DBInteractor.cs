@@ -12,6 +12,11 @@ namespace FlightControlWeb.Models
         public DbSet<ExternalFlight> ExternalFlights { get; set; }
         public DbSet<IdNumber> IdNumbers { get; set; }
 
+        public DBInteractor (DbContextOptions optionsBuilder) : base(optionsBuilder)
+        { }
+
+        public DBInteractor() { }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder

@@ -20,7 +20,6 @@ namespace FlightControlWeb.Models
         {
             var client = new HttpClient();
             string jsonString = await client.GetStringAsync(uri);
-            /*dynamic result = JsonConvert.DeserializeObject<dynamic>(jsonString);*/
             return jsonString;
         }
 

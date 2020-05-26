@@ -88,7 +88,10 @@ namespace FlightControlWeb.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-
+            if (!manager.IsFlightValid(flightPlan))
+            {
+                return BadRequest("Invalid data.");
+            }
             var flight = manager.CreateNewFlightPlan(flightPlan);
             return CreatedAtAction("GetFlightPlan", new { id = flight.Id }, flight);
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,7 +83,37 @@ namespace FlightControlWeb.Models
         }
 
 
-
+        internal bool IsFlightValid(FlightPlan flightPlan)
+        {
+            if (flightPlan.InitialLocation == null ||
+                flightPlan.Segments == null)
+            {
+                return false;
+            }
+            foreach (Segment seg in flightPlan.Segments)
+            {
+                if (seg.Latitude < -90 || seg.Latitude > 90)
+                {
+                    return false;
+                }
+                if (seg.Longitude < -180 || seg.Longitude > 180)
+                {
+                    return false;
+                }
+                if (seg.TimeInSeconds == 0)
+                {
+                    return false;
+                }
+            }
+            if (flightPlan.InitialLocation.Longitude < -180 ||
+                flightPlan.InitialLocation.Longitude > 180 ||
+                flightPlan.InitialLocation.Latitude < -90 ||
+                flightPlan.InitialLocation.Latitude > 90)
+            {
+                return false;
+            }
+            return true;
+        }
         internal FlightPlan CreateNewFlightPlan(FlightPlan flightPlan)
         {
             //generate random id
