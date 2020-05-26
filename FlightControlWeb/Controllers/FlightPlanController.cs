@@ -19,11 +19,15 @@ namespace FlightControlWeb.Controllers
         private readonly DBInteractor db;
         private readonly FlightPlanManager manager;
 
+        public IServerManager ServerManagerProp { get; set; }
+
+
+
         public FlightPlanController(DBInteractor newDB)
         {
             db = newDB;
             manager = new FlightPlanManager(db);
-
+            ServerManagerProp = new ServerManager(db);
         }
 
         // GET: api/FlightPlan/5
@@ -31,7 +35,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetFlightPlan(string id)
         {
-            //FlightPlan flightPlan = null;
+
             // Search in local flight plans.
             var flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
@@ -47,7 +51,7 @@ namespace FlightControlWeb.Controllers
                 string serverUrl = extFlightPlan.ExternalServerUrl;
                 request = serverUrl + request;
                 // Send the request and get FlightPlan object.
-                var response = await ServerManager.MakeRequest(request);
+                var response = await ServerManagerProp.MakeRequest(request);
                 try
                 {
                     flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);
@@ -70,6 +74,7 @@ namespace FlightControlWeb.Controllers
                 DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
                 UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
                 flightinitLocation.DateTime = UtcTime;
+                flightinitLocation.DateTime = UtcTime;
                 flightPlan.Segments = flightSegments;
                 flightPlan.InitialLocation = flightinitLocation;
             }
@@ -88,7 +93,10 @@ namespace FlightControlWeb.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-
+            if (!manager.IsFlightValid(flightPlan))
+            {
+                return BadRequest("Invalid data.");
+            }
             var flight = manager.CreateNewFlightPlan(flightPlan);
             return CreatedAtAction("GetFlightPlan", new { id = flight.Id }, flight);
         }
