@@ -29,11 +29,19 @@ namespace FlightControlWeb.Models
             return db.Servers.Where(server => server.Id == servId).ToList();
         }
 
-         async Task<string>  IServerManager.MakeRequest(string uri)
+        async Task<string> IServerManager.MakeRequest(string uri)
         {
             var client = new HttpClient();
-            string jsonString = await client.GetStringAsync(uri);
-            return jsonString;
+            var response = await client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                return jsonString;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

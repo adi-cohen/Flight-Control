@@ -49,36 +49,39 @@ namespace FlightControlWeb.Controllers
                     string requestFull = serv.Url + requestParams;
                     // Send the request and get Flight object.
                     var response = await ServerManagerProp.MakeRequest(requestFull);
-                    // Desirialize the list of JSON object we got into list of Flights.
-                    try
+                    if (response != null)
                     {
-                        var tmp = JsonConvert.DeserializeObject<List<Flight>>(response);
-                        flightsFromCurrServ.AddRange(tmp);
-                        // Add to flightId -> URL mapping db.
-                        foreach (Flight f in flightsFromCurrServ)
+                        // Desirialize the list of JSON object we got into list of Flights.
+                        try
                         {
-                            if (f.FlightId == null)
+                            var tmp = JsonConvert.DeserializeObject<List<Flight>>(response);
+                            flightsFromCurrServ.AddRange(tmp);
+                            // Add to flightId -> URL mapping db.
+                            foreach (Flight f in flightsFromCurrServ)
                             {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                            f.IsExternal = true;
-                            var temp = db.ExternalFlights.Find(f.FlightId);
-                            if (temp == null)
-                            {
-                                ExternalFlight newExtFlight = new ExternalFlight
+                                if (f.FlightId == null)
                                 {
-                                    FlightId = f.FlightId,
-                                    ExternalServerUrl = serv.Url
-                                };
-                                db.ExternalFlights.Add(newExtFlight);
-                                db.SaveChanges();
+                                    return StatusCode(StatusCodes.Status500InternalServerError);
+                                }
+                                f.IsExternal = true;
+                                var temp = db.ExternalFlights.Find(f.FlightId);
+                                if (temp == null)
+                                {
+                                    ExternalFlight newExtFlight = new ExternalFlight
+                                    {
+                                        FlightId = f.FlightId,
+                                        ExternalServerUrl = serv.Url
+                                    };
+                                    db.ExternalFlights.Add(newExtFlight);
+                                    db.SaveChanges();
+                                }
                             }
+                            externalFlights.AddRange(flightsFromCurrServ);
                         }
-                        externalFlights.AddRange(flightsFromCurrServ);
-                    }
-                    catch (JsonException je)
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, je);
+                        catch (JsonException je)
+                        {
+                            return StatusCode(StatusCodes.Status500InternalServerError, je);
+                        }
                     }
 
                 }

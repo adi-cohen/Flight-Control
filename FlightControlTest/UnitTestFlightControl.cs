@@ -59,7 +59,6 @@ namespace FlightControlTest
                 Assert.AreEqual(3, flight.Segments.Count);
                 Assert.AreEqual(20, flight.InitialLocation.Latitude);
                 Assert.AreEqual(25, flight.InitialLocation.Longitude);
-
             }
         }
 
