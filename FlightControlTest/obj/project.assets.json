@@ -10122,19 +10122,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Boris-Laptop\\.nuget\\packages\\": {}
+    "C:\\Users\\עדי כהן\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Boris-Laptop\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj",
+      "projectUniqueName": "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlTest\\FlightControlTest.csproj",
       "projectName": "FlightControlTest",
-      "projectPath": "C:\\Users\\Boris-Laptop\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj",
-      "packagesPath": "C:\\Users\\Boris-Laptop\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Boris-Laptop\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\obj\\",
+      "projectPath": "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlTest\\FlightControlTest.csproj",
+      "packagesPath": "C:\\Users\\עדי כהן\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlTest\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Boris-Laptop\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\עדי כהן\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -10147,8 +10147,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\Boris-Laptop\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj": {
-              "projectPath": "C:\\Users\\Boris-Laptop\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj"
+            "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj": {
+              "projectPath": "C:\\Users\\עדי כהן\\source\\repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj"
             }
           }
         }
@@ -10205,7 +10205,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

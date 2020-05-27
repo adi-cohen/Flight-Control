@@ -32,16 +32,24 @@ namespace FlightControlWeb.Models
         async Task<string> IServerManager.MakeRequest(string uri)
         {
             var client = new HttpClient();
-            var response = await client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
-                return jsonString;
+                var response = await client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    return jsonString;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (System.Net.Http.HttpRequestException e)
             {
                 return null;
             }
+            
         }
     }
 }
