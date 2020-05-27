@@ -4,29 +4,36 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
+using FlightControlWeb.Controllers;
 
 namespace FlightControlWeb.Models
 {
-    public class ServerManager
+    public class ServerManager : IServerManager
     {
-        private readonly DBInteractor _db;
+        private readonly DBInteractor db;
 
-        public ServerManager(DBInteractor db)
+        internal ServerManager(DBInteractor db)
         {
-            _db = db;
+            this.db = db;
         }
 
-        public static async Task<string> makeRequest(string uri)
+        /*internal async Task<string> MakeRequest(string uri)
         {
             var client = new HttpClient();
             string jsonString = await client.GetStringAsync(uri);
-            /*dynamic result = JsonConvert.DeserializeObject<dynamic>(jsonString);*/
             return jsonString;
+        }*/
+
+        internal List<Server> GetServers(string servId)
+        {
+            return db.Servers.Where(server => server.Id == servId).ToList();
         }
 
-        public List<Server> GetServers(string servId)
+         async Task<string>  IServerManager.MakeRequest(string uri)
         {
-            return _db.Servers.Where(s => s.Id == servId).ToList();
+            var client = new HttpClient();
+            string jsonString = await client.GetStringAsync(uri);
+            return jsonString;
         }
     }
 }
