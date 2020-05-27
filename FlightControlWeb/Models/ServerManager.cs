@@ -19,7 +19,7 @@ namespace FlightControlWeb.Models
         public static async Task<string> makeRequest(string uri)
         {
             var client = new HttpClient();
-            var jsonString = await client.GetStringAsync(uri);
+            string jsonString = await client.GetStringAsync(uri);
             /*dynamic result = JsonConvert.DeserializeObject<dynamic>(jsonString);*/
             return jsonString;
         }
