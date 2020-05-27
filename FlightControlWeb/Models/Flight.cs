@@ -7,28 +7,28 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class Flight
+    internal class Flight
     {
         [JsonProperty(PropertyName = "flight_id")]
-        public string FlightId { get; set; }
+        internal string FlightId { get; set; }
 
         [JsonProperty(PropertyName = "longitude")]
-        public double Longitude { get; set; }
+        internal double Longitude { get; set; }
 
         [JsonProperty(PropertyName = "latitude")]
-        public double Latitude { get; set; }
+        internal double Latitude { get; set; }
 
         [JsonProperty(PropertyName = "passengers")]
-        public int Passengers { get; set; }
+        internal int Passengers { get; set; }
 
         [JsonProperty(PropertyName = "company_name")]
-        public string CompanyName { get; set; }
+        internal string CompanyName { get; set; }
 
         [JsonProperty(PropertyName = "date_time")]
-        public DateTime Date { get; set; }
+        internal DateTime Date { get; set; }
 
         [JsonProperty(PropertyName = "is_external")]
-        public bool IsExternal { get; set; }
+        internal bool IsExternal { get; set; }
 
     }
 }

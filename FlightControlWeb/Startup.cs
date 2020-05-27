@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
 
 namespace FlightControlWeb
 {
@@ -20,7 +14,6 @@ namespace FlightControlWeb
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
         }
 
         public IConfiguration Configuration { get; }
@@ -46,6 +39,7 @@ namespace FlightControlWeb
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -56,6 +50,26 @@ namespace FlightControlWeb
             {
                 endpoints.MapControllers();
             });
+
+
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+
+                var context = serviceScope.ServiceProvider.GetService<DBInteractor>();
+                context.Database.EnsureDeleted();
+                context.Database.Migrate();
+            }
+            UpdateDatabase(app);
+
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<DBInteractor>();
+            context.Database.Migrate();
         }
     }
 }
