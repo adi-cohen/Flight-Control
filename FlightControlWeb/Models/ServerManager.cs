@@ -45,7 +45,7 @@ namespace FlightControlWeb.Models
                     return null;
                 }
             }
-            catch (System.Net.Http.HttpRequestException e)
+            catch (System.Net.Http.HttpRequestException)
             {
                 return null;
             }
