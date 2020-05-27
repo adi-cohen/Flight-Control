@@ -28,8 +28,6 @@ namespace FlightControlWeb.Controllers
             ServerManagerProp = new ServerManager(db);
         }
 
-
-
         // GET: api/Flights/
         [HttpGet("")]
         public async Task<ActionResult> GetFlights([FromQuery]string relative_to)
@@ -45,41 +43,9 @@ namespace FlightControlWeb.Controllers
                 // Pass the HTTP request to all registered external servers.
                 foreach (Server serv in db.Servers)
                 {
-                    var flightsFromCurrServ = new List<Flight>();
+
                     string requestFull = serv.Url + requestParams;
-                    // Send the request and get Flight object.
-                    var response = await ServerManagerProp.MakeRequest(requestFull);
-                    // Desirialize the list of JSON object we got into list of Flights.
-                    try
-                    {
-                        var tmp = JsonConvert.DeserializeObject<List<Flight>>(response);
-                        flightsFromCurrServ.AddRange(tmp);
-                        // Add to flightId -> URL mapping db.
-                        foreach (Flight f in flightsFromCurrServ)
-                        {
-                            if (f.FlightId == null)
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                            f.IsExternal = true;
-                            var temp = db.ExternalFlights.Find(f.FlightId);
-                            if (temp == null)
-                            {
-                                ExternalFlight newExtFlight = new ExternalFlight
-                                {
-                                    FlightId = f.FlightId,
-                                    ExternalServerUrl = serv.Url
-                                };
-                                db.ExternalFlights.Add(newExtFlight);
-                                db.SaveChanges();
-                            }
-                        }
-                        externalFlights.AddRange(flightsFromCurrServ);
-                    }
-                    catch (JsonException je)
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, je);
-                    }
+                    await  FindExternalFlight(requestFull, externalFlights, serv);
 
                 }
                 // Add the external flights to general flightList.
@@ -91,6 +57,56 @@ namespace FlightControlWeb.Controllers
             string output = JsonConvert.SerializeObject(flightList);
             return Ok(output);
         }
+
+        internal async Task<ActionResult> HandleExternalFlights(List<Flight> flightsFromCurrServ, Server serv)
+        {
+            foreach (Flight f in flightsFromCurrServ)
+            {
+                if (f.FlightId == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+                f.IsExternal = true;
+                var temp =await db.ExternalFlights.FindAsync(f.FlightId);
+                if (temp == null)
+                {
+                    ExternalFlight newExtFlight = new ExternalFlight
+                    {
+                        FlightId = f.FlightId,
+                        ExternalServerUrl = serv.Url
+                    };
+                    db.ExternalFlights.Add(newExtFlight);
+                    db.SaveChanges();
+                }
+            }
+            return Ok();
+        }
+
+        internal async Task<ActionResult> FindExternalFlight(string request, List<Flight> externalFlights, Server serv)
+        {
+            var flightsFromCurrServ = new List<Flight>();
+            // Send the request and get Flight object.
+            var response = await ServerManagerProp.MakeRequest(request);
+            if (response != null)
+            {
+                // Desirialize the list of JSON object we got into list of Flights.
+                try
+                {
+                    var tmp = JsonConvert.DeserializeObject<List<Flight>>(response);
+                    flightsFromCurrServ.AddRange(tmp);
+                    // Add to flightId -> URL mapping db.
+                    await HandleExternalFlights(flightsFromCurrServ, serv);
+                    externalFlights.AddRange(flightsFromCurrServ);
+                }
+                catch (JsonException je)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, je);
+                }
+            }
+            return Ok(flightsFromCurrServ);
+        }
+
+
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace FlightControlWeb.Controllers
 {
@@ -31,13 +31,20 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<HttpStatusCode>> PostServer([FromBody] Server serv)
         {
             IdGenerator generator = new IdGenerator(db);
-            if (generator.IsUnique(new IdNumber(serv.Id)))
+            IdNumber temp = new IdNumber(serv.Id);
+
+            // Check if provided ID or URL already exist in DB.
+            var val = db.Servers.Where(s => s.Url == serv.Url).FirstOrDefault();
+            if (generator.IsUnique(temp) && val == null)
             {
+                // If not, add new server.
                 db.Servers.Add(serv);
+                db.IdNumbers.Add(temp);
                 await db.SaveChangesAsync();
                 return HttpStatusCode.Created;
             }
-            return HttpStatusCode.BadRequest;
+            // Otherwise return conflict status code.
+            return StatusCode(409);
         }
 
         // DELETE: api/ApiWithActions/5
