@@ -25,7 +25,7 @@
             margin: 0;
         }
 
-        /* Style the header */
+        /* header style */
         .header {
             background-color: #f1f1f1;
             padding: 20px;
@@ -33,7 +33,7 @@
             font-family: "Comic Sans MS", cursive, sans-serif;
         }
 
-        /* Create three unequal columns that floats next to each other */
+        /* column stule */
         .column {
             float: left;
             text-align: center;
@@ -43,31 +43,31 @@
             margin-bottom: 2px;
         }
 
-            /* Left and right column */
+            /* Left column for flights */
             .column.side {
                 width: 20%;
             }
 
-            /* Middle column */
+            /* map column */
             .column.middle {
                 width: 79%;
             }
 
-        /* Clear floats after the columns */
+        
         .row:after {
             content: "";
             display: table;
             clear: both;
         }
 
-        /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+        /* column size definitions */
         @media screen and (max-width: 800px) {
             .column.side, .column.middle {
                 width: 100%;
             }
         }
 
-        /* Style the bottomRow */
+        /* bottomRow (details) style */
         .bottomRow {
             background-color: #f1f1f1;
             text-align: center;
@@ -77,12 +77,13 @@
             margin-left: 2px;
         }
 
+        /*drop area image*/
         #draganddropimage {
             max-width: 90%;
             height: 180px;
             visibility: hidden;
         }
-
+        /*map define*/
         #mapId {
             height: 300px;
         }
@@ -92,10 +93,11 @@
 
     <div class="header">
         <h1>Flight Control</h1>
-        <p>made by COMBO Projects</p>
     </div>
 
+    <!--first row - flights and map-->
     <div class="row">
+        <!--flights list-->
         <div class="column side" ondragover="allowDrop(event)">
             <h2>Flights</h2>
             <div class="table-responsive">
@@ -106,24 +108,13 @@
             </div>
             <img src="pictures/drop-files-here.jpg" id="draganddropimage" hidden="hidden" ondragleave="dragLeave(event)" ondrop="drop(event)" />
         </div>
-
+        <!--world map-->
         <div class="column middle" id="mapId">
             <h2>Map</h2>
         </div>
-        <!--
-        <div class="column side">
-        <h2>Ext. Flights</h2>
-        <div class="table-responsive">
-            <table class="table table-hover" id="extTable" name="extFlightsList" style="cursor: pointer;min-width:90%;margin-bottom:10px" border="1" align="center">
-                <tbody id="extFlightList" style="margin-left:10px;font-size:small; display: block; align-content:center ; height: 213px; max-width: 100%; overflow-y: scroll">
-                </tbody>
-            </table>
-        </div>
-    </div>
-    -->
-
     </div>
 
+    <!--second row for flight details-->
     <div class="bottomRow" id="divDetails">
         <h2>Flight Details:</h2>
         <p class="flightDetails" id="startPointID"></p>
@@ -132,9 +123,9 @@
         <p class="flightDetails" id="arrivalTimeID"></p>
         <p class="flightDetails" id="companyNameID"></p>
         <p class="flightDetails" id="passengersCountID"></p>
-
     </div>
 
+    <!--js files sources-->
     <script src="js/fileDropScripts.js"></script>
     <script src="js/mainScript.js"></script>
 </body>

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj": {}
+    "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj": {
+    "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj",
+        "projectUniqueName": "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj",
         "projectName": "FlightControlTest",
-        "projectPath": "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj",
-        "packagesPath": "C:\\Users\\omerm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlTest\\obj\\",
+        "projectPath": "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlTest\\FlightControlTest.csproj",
+        "packagesPath": "C:\\Users\\YuvalMachlev\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\omerm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\YuvalMachlev\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -27,8 +27,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj": {
-                "projectPath": "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj"
+              "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj": {
+                "projectPath": "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj"
               }
             }
           }
@@ -89,17 +89,17 @@
         }
       }
     },
-    "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj": {
+    "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj",
+        "projectUniqueName": "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj",
         "projectName": "FlightControlWeb",
-        "projectPath": "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj",
-        "packagesPath": "C:\\Users\\omerm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\omerm\\Source\\Repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\obj\\",
+        "projectPath": "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\FlightControlWeb.csproj",
+        "packagesPath": "C:\\Users\\YuvalMachlev\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\YuvalMachlev\\source\\repos\\adi-cohen\\Flight-Control\\FlightControlWeb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\omerm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\YuvalMachlev\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
