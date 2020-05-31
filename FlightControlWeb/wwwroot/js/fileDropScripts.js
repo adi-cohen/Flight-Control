@@ -1,10 +1,18 @@
-﻿function allowDrop(event) {
+﻿/**
+ * allow droping items into certain spot
+ * @param {any} event
+ */
+function allowDrop(event) {
 	event.preventDefault();
 	document.getElementById("draganddropimage").style.visibility = "visible";
 	$("#flightList").hide();
 	$("#draganddropimage").show();
 }
 
+/**
+ * deal with leaving the drop spot area
+ * @param {any} event
+ */
 function dragLeave(event) {
 	event.preventDefault();
 	$("#draganddropimage").hide();
@@ -23,6 +31,11 @@ function sendFile(data) {
 	request.send(data);
 }
 
+/**
+ * show error alert for a while
+ * @param {any} msg error message
+ * @param {any} duration time in ms
+ */
 function tempAlert2(msg, duration) {
 	let alertBox = document.createElement("div");
 	alertBox.setAttribute("style", "position:absolute;top:2%;left:2%;background-color:red;font-size:large;border-radius: 5px;");
@@ -33,6 +46,10 @@ function tempAlert2(msg, duration) {
 	document.body.appendChild(alertBox);
 }
 
+/**
+ * post to the API server the items that we droped
+ * @param {any} event
+ */
 function drop(event) {
 	event.preventDefault();
 	$("#draganddropimage").hide();
