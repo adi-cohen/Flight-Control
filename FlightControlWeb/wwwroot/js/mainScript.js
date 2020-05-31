@@ -70,6 +70,7 @@ function createMap() {
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 		maxZoom: 18,
 		minZoom: 1,
+		continuousWorld: true,
 		id: 'mapbox/streets-v11',
 		tileSize: 512,
 		noWrap: false,
@@ -83,10 +84,10 @@ function createMap() {
 function addToMap(flight) {
 	let marker1;
 	if (flight.flight_id == selectedId) {
-		marker1 = L.marker([flight.longitude, flight.latitude],
+		marker1 = L.marker([flight.latitude, flight.longitude],
 			{ icon: greenIcon }).addTo(layerGroup);
 	} else {
-		marker1 = L.marker([flight.longitude, flight.latitude],
+		marker1 = L.marker([flight.latitude, flight.longitude],
 			{ icon: blackIcon }).addTo(layerGroup);
 	}
 	marker1.className = flight.flight_id;
@@ -155,10 +156,10 @@ function drawPath(segments, initial_location) {
 
 		let lon = initial_location.longitude;
 		let lat = initial_location.latitude;
-		let len = segments.length;
-		let path = [[lon, lat]];
+		let len = segments.length;	
+		let path = [[lat, lon]];
 		for (let i = 0; i < len; i++) {
-			path.push([segments[i].longitude, segments[i].latitude]);
+			path.push([segments[i].latitude, segments[i].longitude]);
 		}
 		polyline = L.polyline(path, { color: 'red' });
 		polyline.addTo(mymap);

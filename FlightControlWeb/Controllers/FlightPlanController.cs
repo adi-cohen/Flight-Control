@@ -17,16 +17,17 @@ namespace FlightControlWeb.Controllers
     public class FlightPlanController : ControllerBase
     {
         private readonly DBInteractor db;
-        private readonly IFlightPlanManager manager;
-        private readonly ServerManager servManager;
-        private readonly IdGenerator generator;
-        public FlightPlanController(DBInteractor newDb)
-        {
-            db = newDb;
-            manager = new FlightPlanManager(db);
-            servManager = new ServerManager(db);
-            generator = new IdGenerator(db);
+        private readonly FlightPlanManager manager;
 
+        public IServerManager ServerManagerProp { get; set; }
+
+
+
+        public FlightPlanController(DBInteractor newDB)
+        {
+            db = newDB;
+            manager = new FlightPlanManager(db);
+            ServerManagerProp = new ServerManager(db);
         }
 
         // GET: api/FlightPlan/5
@@ -34,13 +35,13 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetFlightPlan(string id)
         {
-            //FlightPlan flightPlan = null;
+
             // Search in local flight plans.
-            FlightPlan flightPlan = await db.FlightPlans.FindAsync(id);
+            var flightPlan = await db.FlightPlans.FindAsync(id);
             if (flightPlan == null)
             {
                 // If not found, search for the id in external flights db.
-                ExternalFlight extFlightPlan = await db.ExternalFlights.FindAsync(id);
+                var extFlightPlan = await db.ExternalFlights.FindAsync(id);
                 if (extFlightPlan == null)
                 {
                     return NotFound();
@@ -50,7 +51,7 @@ namespace FlightControlWeb.Controllers
                 string serverUrl = extFlightPlan.ExternalServerUrl;
                 request = serverUrl + request;
                 // Send the request and get FlightPlan object.
-                var response = await ServerManager.makeRequest(request);
+                var response = await ServerManagerProp.MakeRequest(request);
                 try
                 {
                     flightPlan = JsonConvert.DeserializeObject<FlightPlan>(response);
@@ -60,29 +61,28 @@ namespace FlightControlWeb.Controllers
                         return StatusCode(StatusCodes.Status500InternalServerError, "one of the fields is null, try again");
                     }
                 }
-                catch(JsonException je)
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, je.Data);
-                    }
+                catch (JsonException je)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, je.Data);
+                }
             }
             else
             {
                 //get all the details about the internal flight
-                List<Segment> flightSegments = db.Segments.Where(s => s.FlightId == flightPlan.Id).OrderBy(s => s.SegmentNumber).ToList();
-                InitialLocation flightinitLocation = db.InitLocations.Where(i => i.FlightId == flightPlan.Id).First();
+                var flightSegments = db.Segments.Where(segment => segment.FlightId == flightPlan.Id).OrderBy(segment => segment.SegmentNumber).ToList();
+                var flightinitLocation = db.InitLocations.Where(initialLocation => initialLocation.FlightId == flightPlan.Id).First();
                 DateTime UtcTime = (TimeZoneInfo.ConvertTimeToUtc(flightinitLocation.DateTime));
                 UtcTime.ToString("yyyy-MM-dd-THH:mm:ssZ");
+                flightinitLocation.DateTime = UtcTime;
                 flightinitLocation.DateTime = UtcTime;
                 flightPlan.Segments = flightSegments;
                 flightPlan.InitialLocation = flightinitLocation;
             }
             string output = JsonConvert.SerializeObject(flightPlan);
             return Ok(output);
-
-            //return output;
         }
 
-        
+
 
         // POST: api/FlightPlan
         // insert new flight plan
@@ -93,11 +93,13 @@ namespace FlightControlWeb.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-
-            FlightPlan flight =  manager.createNewFlightPlan(flightPlan);
+            if (!manager.IsFlightValid(flightPlan))
+            {
+                return BadRequest("Invalid data.");
+            }
+            var flight = manager.CreateNewFlightPlan(flightPlan);
             return CreatedAtAction("GetFlightPlan", new { id = flight.Id }, flight);
         }
 
-   
     }
 }
