@@ -72,6 +72,9 @@ function createMap() {
 		minZoom: 1,
 		id: 'mapbox/streets-v11',
 		tileSize: 512,
+		noWrap: false,
+		worldCopyJump: true,
+		continuousWorld: false,
 		zoomOffset: -1,
 		accessToken: 'pk.eyJ1Ijoib21lcm1vayIsImEiOiJja2FnaXlvbmMwNDFpMnhtb2ptdnJ3NnZhIn0._fxKcKn0NhvxL8chgMNzYQ'
 	}).addTo(mymap);
